@@ -5,7 +5,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f1e7d8">
-  <title>Mathieu Nauleau — Projects</title>
+  <meta name="description" content="UX Portfolio project">
+  <meta name="keywords" content="UX, Design, Designer, Portfolio">
+  <meta name="author" content="Mathieu Nauleau">
+
+  <title>Oh, hello.</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: light;
@@ -20,236 +28,93 @@
     }
 
     body {
+      display: grid;
       min-width: 320px;
       min-height: 100vh;
       margin: 0;
-      padding: clamp(32px, 8vw, 112px) 24px;
+      padding: 32px 24px;
+      place-items: center;
       background: var(--paper);
       color: var(--ink);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     main {
-      width: min(100%, 1120px);
-      margin: 0 auto;
+      width: min(100%, 520px);
     }
 
-    .intro {
-      margin: 0 0 40px;
-    }
-
-    .eyebrow {
-      margin: 0 0 12px;
-      color: var(--muted);
-      font-size: 0.8rem;
-      font-weight: 650;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    h1,
-    h2 {
-      font-family: Georgia, "Times New Roman", serif;
-      font-weight: 500;
+    .box {
+      padding: clamp(28px, 7vw, 56px);
+      border-radius: 30px;
+      background: var(--card);
+      box-shadow: 0 16px 36px rgb(46 51 39 / 8%);
     }
 
     h1 {
-      margin: 0;
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      letter-spacing: -0.045em;
-      line-height: 1;
-    }
-
-    .intro p:last-child {
-      max-width: 38rem;
-      margin: 16px 0 0;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.6;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-      gap: 24px;
-    }
-
-    .card {
-      display: flex;
-      min-height: 100%;
-      flex-direction: column;
-      padding: 12px 12px 24px;
-      overflow: hidden;
-      border-radius: 30px;
-      background: var(--card);
-      color: inherit;
-      text-decoration: none;
-      transition: transform 180ms ease, box-shadow 180ms ease;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 36px rgb(46 51 39 / 10%);
-    }
-
-    .card:focus-visible {
-      outline: 3px solid #55786b;
-      outline-offset: 5px;
-    }
-
-    .cover {
-      display: grid;
-      aspect-ratio: 1.65;
-      place-items: center;
-      overflow: hidden;
-      border-radius: 22px;
-      background: #e5e5e8;
-    }
-
-    .cover img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 42%;
-    }
-
-    .document {
-      width: 42%;
-      height: 82%;
-      padding: 8% 7%;
-      border-radius: 5px;
-      background: #fffefa;
-      box-shadow: 0 12px 28px rgb(29 61 58 / 13%);
-      transform: rotate(-4deg);
-    }
-
-    .document-name {
-      width: 62%;
-      height: 9%;
-      margin-bottom: 8%;
-      border-radius: 99px;
-      background: #1d3d3a;
-    }
-
-    .document-line {
-      height: 3px;
-      margin: 5% 0;
-      border-radius: 99px;
-      background: #d7ddd4;
-    }
-
-    .document-line.short {
-      width: 65%;
-    }
-
-    .document-section {
-      width: 42%;
-      height: 5%;
-      margin: 10% 0 6%;
-      border-radius: 99px;
-      background: #d5a77b;
-    }
-
-    .system-preview {
-      display: grid;
-      width: 76%;
-      gap: 10px;
-      padding: 18px;
-      border: 1px solid rgb(255 255 255 / 55%);
-      border-radius: 14px;
-      background: rgb(255 255 255 / 92%);
-      box-shadow: 0 12px 28px rgb(34 35 82 / 16%);
-    }
-
-    .system-preview-title {
-      width: 38%;
-      height: 9px;
-      margin-bottom: 4px;
-      border-radius: 99px;
-      background: #303963;
-    }
-
-    .swatches {
-      display: flex;
-      gap: 7px;
-    }
-
-    .swatch {
-      width: 25px;
-      height: 25px;
-      border-radius: 7px;
-      background: #667eea;
-    }
-
-    .swatch:nth-child(2) {
-      background: #9b72bd;
-    }
-
-    .swatch:nth-child(3) {
-      background: #e7b77c;
-    }
-
-    .swatch:nth-child(4) {
-      background: #85b7a4;
-    }
-
-    .system-preview-row {
-      height: 30px;
-      border: 1px solid #e4e6ef;
-      border-radius: 7px;
-      background: linear-gradient(90deg, #f1f2f8 42%, transparent 42%);
-    }
-
-    .card-copy {
-      display: flex;
-      flex: 1;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 20px 10px 0;
-    }
-
-    h2 {
-      margin: 0;
-      font-size: clamp(1.6rem, 3vw, 2.15rem);
-      letter-spacing: -0.025em;
+      margin: 0 0 28px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2rem, 6vw, 2.6rem);
+      font-weight: 500;
+      letter-spacing: -0.035em;
       line-height: 1.12;
     }
 
-    .description {
-      margin: 10px 0 0;
+    input {
+      width: 100%;
+      min-height: 54px;
+      padding: 0 16px;
+      border: 1px solid #d7ddd4;
+      border-radius: 12px;
+      background: var(--card);
+      color: var(--ink);
+      font: inherit;
+    }
+
+    input::placeholder {
       color: var(--muted);
-      font-size: 1rem;
-      line-height: 1.5;
+      opacity: 1;
     }
 
-    .arrow {
-      flex: 0 0 auto;
-      margin-top: 2px;
-      font-size: 1.5rem;
-      line-height: 1;
-      transition: transform 180ms ease;
+    input:focus-visible,
+    button:focus-visible {
+      outline: 3px solid #55786b;
+      outline-offset: 3px;
     }
 
-    .card:hover .arrow {
-      transform: translate(3px, -3px);
+    button {
+      display: inline-flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 16px;
+      padding: 0 22px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--ink);
+      color: var(--card);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 600;
+      transition: transform 180ms ease, background-color 180ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      background: #294d48;
+    }
+
+    #wrongPassword {
+      margin: 16px 0 0;
+      color: var(--muted);
     }
 
     @media (max-width: 640px) {
       body {
-        padding: 48px 20px;
+        padding: 24px 20px;
       }
 
-      .intro {
-        margin-bottom: 28px;
-      }
-
-      .cards {
-        grid-template-columns: 1fr;
-        gap: 18px;
-      }
-
-      .card {
+      .box {
         border-radius: 26px;
       }
     }
@@ -259,7 +124,6 @@
       *,
       *::before,
       *::after {
-        scroll-behavior: auto !important;
         transition-duration: 0.01ms !important;
       }
     }
@@ -268,74 +132,57 @@
 
 <body>
   <main>
-    <header class="intro">
-      <p class="eyebrow">A collection of tools</p>
-      <h1>Mathieu Nauleau</h1>
-      <p>A few small projects to help make thoughtful work a little easier.</p>
-    </header>
-
-    <section class="cards" aria-label="Projects">
-      <a class="card" href="cvbuilder/">
-        <div class="cover">
-          <img src="cvbuilder/assets/cv-builder-start.png" alt="" width="1370" height="768">
-        </div>
-        <div class="card-copy">
-          <div>
-            <h2>CV Builder</h2>
-            <p class="description">Build and export a focused, one-page CV in English or French.</p>
-          </div>
-          <span class="arrow" aria-hidden="true">↗</span>
-        </div>
-      </a>
-
-      <a class="card" href="cvbuilder/CV-Data.html">
-        <div class="cover" aria-hidden="true">
-          <div class="document">
-            <div class="document-name"></div>
-            <div class="document-line"></div>
-            <div class="document-line short"></div>
-            <div class="document-section"></div>
-            <div class="document-line"></div>
-            <div class="document-line short"></div>
-            <div class="document-line"></div>
-            <div class="document-section"></div>
-            <div class="document-line short"></div>
-            <div class="document-line"></div>
-          </div>
-        </div>
-        <div class="card-copy">
-          <div>
-            <h2>CV Data Editor</h2>
-            <p class="description">Review and edit the shared CV content across roles and languages.</p>
-          </div>
-          <span class="arrow" aria-hidden="true">↗</span>
-        </div>
-      </a>
-
-      <a class="card" href="design-system/index.html">
-        <div class="cover" aria-hidden="true" style="background: linear-gradient(135deg, #667eea, #764ba2)">
-          <div class="system-preview">
-            <div class="system-preview-title"></div>
-            <div class="swatches">
-              <span class="swatch"></span>
-              <span class="swatch"></span>
-              <span class="swatch"></span>
-              <span class="swatch"></span>
-            </div>
-            <div class="system-preview-row"></div>
-            <div class="system-preview-row"></div>
-          </div>
-        </div>
-        <div class="card-copy">
-          <div>
-            <h2>Design System</h2>
-            <p class="description">Explore the component review dashboard.</p>
-          </div>
-          <span class="arrow" aria-hidden="true">↗</span>
-        </div>
-      </a>
+    <section class="box" aria-labelledby="page-title">
+      <h1 id="page-title">Eh oh, qui va là ?</h1>
+      <input id="password" type="password" size="20" maxlength="20" placeholder="Enter password" aria-label="Password"
+        autocomplete="current-password">
+      <button id="loginbutton" type="button">
+        <span data-i18n="btn.contact">Submit</span>
+        <span aria-hidden="true">→</span>
+      </button>
+      <p id="wrongPassword" style="display: none">wrong password</p>
     </section>
   </main>
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+
+  <script type="text/javascript"
+    src="https://rawcdn.githack.com/chrisveness/crypto/7067ee62f18c76dd4a9d372a00e647205460b62b/sha1.js"></script>
+
+  <script type="text/javascript">
+    "use strict";
+
+    function loadPage(pwd) {
+      var hash = pwd;
+      hash = Sha1.hash(pwd);
+      var url = hash + "/index.html";
+
+      $.ajax({
+        url: url,
+        dataType: "html",
+        success: function (data) {
+          window.location = url;
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          parent.location.hash = hash;
+
+          //$("#wrongPassword").show();
+          $("#password").attr("placeholder", "wrong password");
+          $("#password").val("");
+        },
+      });
+    }
+
+    $("#loginbutton").on("click", function () {
+      loadPage($("#password").val());
+    });
+    $("#password").keypress(function (e) {
+      if (e.which == 13) {
+        loadPage($("#password").val());
+      }
+    });
+    $("#password").focus();
+  </script>
 </body>
 
 </html>
