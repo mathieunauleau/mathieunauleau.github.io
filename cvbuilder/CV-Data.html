@@ -534,6 +534,86 @@
       z-index: 20;
     }
 
+    /* ── GitHub sync dialog ── */
+    dialog.sync {
+      border: 0;
+      border-radius: 14px;
+      padding: 22px 24px;
+      width: min(520px, calc(100vw - 32px));
+      box-shadow: 0 20px 60px rgba(28, 29, 38, 0.35);
+      color: var(--ink);
+      font-size: 13.5px;
+      line-height: 1.5;
+    }
+
+    dialog.sync::backdrop {
+      background: rgba(28, 29, 38, 0.35);
+    }
+
+    dialog.sync h2 {
+      margin: 0 0 6px;
+      font-size: 17px;
+    }
+
+    dialog.sync ol {
+      margin: 8px 0 14px;
+      padding-left: 20px;
+    }
+
+    dialog.sync label {
+      display: block;
+      font-weight: 600;
+      margin: 10px 0 4px;
+    }
+
+    dialog.sync input[type="password"],
+    dialog.sync input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      height: 34px;
+      padding: 0 10px;
+      border: 1px solid #d3d6e2;
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    dialog.sync input:focus-visible {
+      outline: 0;
+      box-shadow: var(--ring);
+    }
+
+    dialog.sync .hint {
+      color: #5d6072;
+      font-size: 12.5px;
+      margin: 4px 0 0;
+    }
+
+    dialog.sync .row {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    dialog.sync .row .grow {
+      flex: 1;
+    }
+
+    dialog.sync .msg {
+      min-height: 1.5em;
+      margin-top: 10px;
+      font-weight: 550;
+    }
+
+    dialog.sync .msg.err {
+      color: #b3261e;
+    }
+
+    dialog.sync .msg.ok {
+      color: var(--ok);
+    }
+
     .sr {
       position: absolute;
       width: 1px;
@@ -602,7 +682,38 @@
       Restore backup…
     </button>
     <input type="file" id="restoreFile" accept="application/json,.json" hidden />
+    <button class="link" id="syncBtn" type="button">GitHub sync…</button>
   </div>
+
+  <dialog class="sync" id="syncDlg" aria-labelledby="syncTitle">
+    <form method="dialog" id="syncForm">
+      <h2 id="syncTitle">Sync edits between laptops</h2>
+      <p style="margin: 0">
+        When sync is on, every Save also writes your edits to
+        <code id="syncPath"></code> in your GitHub repository. When you open this page
+        on another laptop, it loads them from there.
+      </p>
+      <p class="hint">Do this once on each laptop:</p>
+      <ol class="hint">
+        <li>Open
+          <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → New fine-grained token</a>.
+        </li>
+        <li>Under <b>Repository access</b>, choose <b>Only select repositories</b> and select
+          <b id="syncRepoName"></b>.</li>
+        <li>Under <b>Permissions → Contents</b>, choose <b>Read and write</b>. Generate the token and copy it.</li>
+      </ol>
+      <label for="syncToken">Access token</label>
+      <input type="password" id="syncToken" autocomplete="off" spellcheck="false" placeholder="github_pat_…" />
+      <p class="hint">The token is saved only in this browser. It is never added to the page or to the repository.</p>
+      <div class="msg" id="syncMsg" role="status" aria-live="polite"></div>
+      <div class="row">
+        <button class="link" id="syncForget" type="button">Turn off sync on this laptop</button>
+        <span class="grow"></span>
+        <button class="btn" value="cancel" formnovalidate>Close</button>
+        <button class="btn btn-primary" id="syncConnect" type="button">Connect</button>
+      </div>
+    </form>
+  </dialog>
 
   <div class="wrap" id="wrap">
     <table id="grid">
@@ -2199,6 +2310,11 @@
         el.classList.add("warn");
         text += " · this view cannot store data: use “Download backup”";
       }
+      if (gh.token && gh.note) {
+        text += " · " + gh.note;
+        if (gh.state === "error" || gh.state === "pending")
+          el.classList.add("warn");
+      }
       $("#statusText").textContent = text;
       $("#saveBtn").disabled = !dirty;
       $("#discardBtn").disabled = !dirty;
@@ -2298,6 +2414,10 @@
           ? "Saved. The CV Builder now uses these texts."
           : "Not stored: this view blocks browser storage. Download a backup to keep your edits.",
       );
+      if (gh.token) {
+        ghSet(GH_PENDING, "1");
+        ghPush();
+      }
     }
     $("#saveBtn").addEventListener("click", save);
     $("#discardBtn").addEventListener("click", () => {
@@ -2389,6 +2509,301 @@
       }
     });
 
+    /* ── GitHub sync: Save also writes the edits to a JSON file in the repo, and opening the page loads it,
+     so the same edits follow you to any laptop. The token lives only in this browser's storage. ── */
+    const GH = {
+      owner: "mathieunauleau",
+      repo: "mathieunauleau.github.io",
+      branch: "main",
+      path: "cvbuilder/CV-texts-backup.json",
+    };
+    const GH_TOKEN = "cvb.gh.token",
+      GH_SHA = "cvb.gh.sha", // version of the GitHub file this laptop last read or wrote
+      GH_PENDING = "cvb.gh.pending"; // "1" = this laptop has saved edits not yet on GitHub
+    const GH_URL = `https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${GH.path}`;
+    function ghGet(k) {
+      try {
+        return localStorage.getItem(k) || "";
+      } catch (e) {
+        return "";
+      }
+    }
+    function ghSet(k, v) {
+      try {
+        if (v) localStorage.setItem(k, v);
+        else localStorage.removeItem(k);
+      } catch (e) {
+        /* ignore */
+      }
+    }
+    const gh = { token: ghGet(GH_TOKEN), state: "", note: "", busy: false, again: false };
+    function ghNote(state, note) {
+      gh.state = state;
+      gh.note = note;
+      status();
+    }
+    const fmtDate = (iso) =>
+      iso && !isNaN(new Date(iso))
+        ? new Date(iso).toLocaleString([], {
+          day: "numeric",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+        : "unknown date";
+    function b64enc(s) {
+      let bin = "";
+      new TextEncoder().encode(s).forEach((c) => (bin += String.fromCharCode(c)));
+      return btoa(bin);
+    }
+    const b64dec = (s) =>
+      new TextDecoder().decode(
+        Uint8Array.from(atob(s.replace(/\s/g, "")), (c) => c.charCodeAt(0)),
+      );
+    async function ghApi(method, body, token = gh.token) {
+      const res = await fetch(
+        GH_URL + (method === "GET" ? "?ref=" + encodeURIComponent(GH.branch) : ""),
+        {
+          method,
+          cache: "no-store",
+          headers: {
+            Accept: "application/vnd.github+json",
+            Authorization: "Bearer " + token,
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+          body: body ? JSON.stringify(body) : undefined,
+        },
+      );
+      let json = null;
+      try {
+        json = await res.json();
+      } catch (e) {
+        /* empty body */
+      }
+      return { ok: res.ok, status: res.status, json };
+    }
+    function ghErr(res) {
+      if (res.status === 401) return "the token is wrong or has expired";
+      if (res.status === 403)
+        return "the token cannot write to this repository (it needs Contents: Read and write)";
+      if (res.status === 404)
+        return "the token cannot see the repository " + GH.owner + "/" + GH.repo;
+      return "GitHub answered " + res.status;
+    }
+    /* the current file on GitHub: { sha, data } (sha null when the file does not exist yet) */
+    async function ghRead(token) {
+      const res = await ghApi("GET", null, token);
+      if (res.status === 404 && res.json && /not found/i.test(res.json.message || ""))
+        return { sha: null, data: null };
+      if (!res.ok) throw new Error(ghErr(res));
+      let o = null;
+      try {
+        o = JSON.parse(b64dec(res.json.content || ""));
+      } catch (e) {
+        /* unreadable: treated as empty */
+      }
+      const ok = o && o.v === 1;
+      return {
+        sha: res.json.sha,
+        data: {
+          savedAt: ok && typeof o.savedAt === "string" ? o.savedAt : "",
+          edits: ok ? sanitizeEdits(o.edits, SHEET) : {},
+        },
+      };
+    }
+    /* make the GitHub version this laptop's saved version (and the CV Builder's) */
+    function ghApply(r) {
+      saved = { ...r.data.edits };
+      savedAt = r.data.savedAt;
+      draft = { ...saved };
+      try {
+        if (Object.keys(saved).length)
+          localStorage.setItem(
+            TEXTS_KEY,
+            JSON.stringify({ type: "cvb-texts", v: 1, savedAt, edits: saved }),
+          );
+        else localStorage.removeItem(TEXTS_KEY);
+      } catch (e) {
+        /* ignore */
+      }
+      try {
+        if (window.opener && !window.opener.closed)
+          window.opener.postMessage(
+            { type: "cvb-texts", v: 1, savedAt, edits: saved },
+            "*",
+          );
+      } catch (e) {
+        /* ignore */
+      }
+      ghSet(GH_SHA, r.sha);
+      ghSet(GH_PENDING, "");
+      render();
+      ghNote("ok", "synced with GitHub");
+    }
+    /* on open: load edits made on another laptop, or send edits this laptop could not send before */
+    async function ghPull() {
+      if (!gh.token) return;
+      ghNote("busy", "checking GitHub…");
+      try {
+        const r = await ghRead();
+        const pending = ghGet(GH_PENDING) === "1";
+        if (!r.sha) {
+          if (Object.keys(saved).length) return ghPush();
+          return ghNote("ok", "synced with GitHub");
+        }
+        if (sameEdits(r.data.edits, saved)) {
+          ghSet(GH_SHA, r.sha);
+          ghSet(GH_PENDING, "");
+          return ghNote("ok", "synced with GitHub");
+        }
+        if (pending && r.sha === ghGet(GH_SHA)) return ghPush(); // only this laptop changed
+        if (pending) {
+          // both this laptop and another one changed the texts
+          const useGitHub = confirm(
+            `GitHub has edits saved from another laptop (${fmtDate(r.data.savedAt)}). This laptop also has edits that were not synced (${fmtDate(savedAt)}).\n\n` +
+            "OK: load the GitHub edits. This laptop's unsynced edits are replaced.\n" +
+            "Cancel: keep this laptop's edits. Your next Save asks whether to overwrite GitHub.",
+          );
+          if (useGitHub) {
+            ghApply(r);
+            toast("Loaded the edits from GitHub.");
+          } else ghNote("pending", "not synced with GitHub");
+          return;
+        }
+        if (
+          isDirty() &&
+          !confirm(
+            "GitHub has newer edits from another laptop. Load them? What you typed since opening this page is lost.",
+          )
+        )
+          return ghNote("pending", "GitHub has newer edits: reload to load them");
+        ghApply(r);
+        toast(`Loaded the latest edits from GitHub (saved ${fmtDate(r.data.savedAt)}).`);
+      } catch (e) {
+        ghNote("error", "GitHub sync failed: " + (e.message || "no connection"));
+      }
+    }
+    /* after Save: write this laptop's saved edits to GitHub */
+    async function ghPush() {
+      if (!gh.token) return;
+      if (gh.busy) {
+        gh.again = true;
+        return;
+      }
+      gh.busy = true;
+      ghNote("busy", "syncing with GitHub…");
+      try {
+        let sha = ghGet(GH_SHA) || undefined;
+        for (let attempt = 0; attempt < 2; attempt++) {
+          const n = Object.keys(saved).length;
+          const body = {
+            message: `CV texts: ${n} edited cell${n === 1 ? "" : "s"} (saved ${fmtDate(savedAt)})`,
+            content: b64enc(
+              JSON.stringify(
+                { v: 1, savedAt: savedAt || new Date().toISOString(), edits: saved },
+                null,
+                2,
+              ) + "\n",
+            ),
+            branch: GH.branch,
+          };
+          if (sha) body.sha = sha;
+          const res = await ghApi("PUT", body);
+          if (res.ok) {
+            ghSet(GH_SHA, res.json.content.sha);
+            ghSet(GH_PENDING, "");
+            return ghNote("ok", "synced with GitHub");
+          }
+          if (res.status !== 409 && res.status !== 422) throw new Error(ghErr(res));
+          // the file changed on GitHub since this laptop last read it
+          const r = await ghRead();
+          if (!r.sha) {
+            sha = undefined;
+            continue;
+          }
+          if (sameEdits(r.data.edits, saved)) {
+            ghSet(GH_SHA, r.sha);
+            ghSet(GH_PENDING, "");
+            return ghNote("ok", "synced with GitHub");
+          }
+          if (
+            attempt === 0 &&
+            confirm(
+              `GitHub has other edits, saved from another laptop (${fmtDate(r.data.savedAt)}).\n\n` +
+              "OK: replace them with this laptop's edits.\n" +
+              "Cancel: leave GitHub as it is. Your edits stay on this laptop only.",
+            )
+          ) {
+            sha = r.sha;
+            continue;
+          }
+          break;
+        }
+        ghNote("pending", "not synced with GitHub");
+      } catch (e) {
+        ghNote("error", "GitHub sync failed: " + (e.message || "no connection"));
+        toast("Saved on this laptop, but not on GitHub: " + (e.message || "no connection") + ".");
+      } finally {
+        gh.busy = false;
+        if (gh.again) {
+          gh.again = false;
+          ghPush();
+        }
+      }
+    }
+    window.addEventListener("beforeunload", (e) => {
+      if (gh.busy) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    });
+
+    /* settings dialog */
+    const syncDlg = $("#syncDlg");
+    $("#syncPath").textContent = GH.path;
+    $("#syncRepoName").textContent = GH.owner + "/" + GH.repo;
+    function syncMsg(text, cls) {
+      const m = $("#syncMsg");
+      m.textContent = text;
+      m.className = "msg" + (cls ? " " + cls : "");
+    }
+    $("#syncBtn").addEventListener("click", () => {
+      $("#syncToken").value = "";
+      $("#syncToken").placeholder = gh.token ? "Connected. Paste a new token to replace it." : "github_pat_…";
+      $("#syncForget").hidden = !gh.token;
+      $("#syncConnect").textContent = gh.token ? "Replace token" : "Connect";
+      syncMsg(
+        gh.token ? "Sync is on for this laptop: " + (gh.note || "ready") + "." : "Sync is off for this laptop.",
+        gh.token && gh.state === "ok" ? "ok" : gh.state === "error" ? "err" : "",
+      );
+      syncDlg.showModal();
+    });
+    $("#syncConnect").addEventListener("click", async () => {
+      const token = $("#syncToken").value.trim();
+      if (!token) return syncMsg("Paste the token first.", "err");
+      syncMsg("Checking the token…");
+      try {
+        await ghRead(token);
+      } catch (e) {
+        return syncMsg("This token does not work: " + (e.message || "no connection") + ".", "err");
+      }
+      gh.token = token;
+      ghSet(GH_TOKEN, token);
+      // treat this laptop's existing edits as unsynced, so nothing is overwritten without asking
+      ghSet(GH_SHA, "");
+      ghSet(GH_PENDING, Object.keys(saved).length ? "1" : "");
+      syncDlg.close();
+      toast("GitHub sync is on for this laptop.");
+      ghPull();
+    });
+    $("#syncForget").addEventListener("click", () => {
+      gh.token = "";
+      [GH_TOKEN, GH_SHA, GH_PENDING].forEach((k) => ghSet(k, ""));
+      ghNote("", "");
+      syncDlg.close();
+      toast("GitHub sync is off for this laptop. Your edits stay saved here.");
+    });
+
     render();
     try {
       localStorage.getItem(TEXTS_KEY);
@@ -2409,6 +2824,7 @@
     document.fonts.ready.then(() =>
       document.querySelectorAll("td.editable textarea").forEach(autosize),
     );
+    ghPull();
     window.CVD = {
       SHEET,
       get draft() {

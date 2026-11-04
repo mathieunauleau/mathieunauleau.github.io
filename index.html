@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -69,7 +70,7 @@
 
     .cards {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
       gap: 24px;
     }
 
@@ -149,6 +150,56 @@
       background: #d5a77b;
     }
 
+    .system-preview {
+      display: grid;
+      width: 76%;
+      gap: 10px;
+      padding: 18px;
+      border: 1px solid rgb(255 255 255 / 55%);
+      border-radius: 14px;
+      background: rgb(255 255 255 / 92%);
+      box-shadow: 0 12px 28px rgb(34 35 82 / 16%);
+    }
+
+    .system-preview-title {
+      width: 38%;
+      height: 9px;
+      margin-bottom: 4px;
+      border-radius: 99px;
+      background: #303963;
+    }
+
+    .swatches {
+      display: flex;
+      gap: 7px;
+    }
+
+    .swatch {
+      width: 25px;
+      height: 25px;
+      border-radius: 7px;
+      background: #667eea;
+    }
+
+    .swatch:nth-child(2) {
+      background: #9b72bd;
+    }
+
+    .swatch:nth-child(3) {
+      background: #e7b77c;
+    }
+
+    .swatch:nth-child(4) {
+      background: #85b7a4;
+    }
+
+    .system-preview-row {
+      height: 30px;
+      border: 1px solid #e4e6ef;
+      border-radius: 7px;
+      background: linear-gradient(90deg, #f1f2f8 42%, transparent 42%);
+    }
+
     .card-copy {
       display: flex;
       flex: 1;
@@ -204,6 +255,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
+
       *,
       *::before,
       *::after {
@@ -213,6 +265,7 @@
     }
   </style>
 </head>
+
 <body>
   <main>
     <header class="intro">
@@ -258,7 +311,31 @@
           <span class="arrow" aria-hidden="true">↗</span>
         </div>
       </a>
+
+      <a class="card" href="design-system/index.html">
+        <div class="cover" aria-hidden="true" style="background: linear-gradient(135deg, #667eea, #764ba2)">
+          <div class="system-preview">
+            <div class="system-preview-title"></div>
+            <div class="swatches">
+              <span class="swatch"></span>
+              <span class="swatch"></span>
+              <span class="swatch"></span>
+              <span class="swatch"></span>
+            </div>
+            <div class="system-preview-row"></div>
+            <div class="system-preview-row"></div>
+          </div>
+        </div>
+        <div class="card-copy">
+          <div>
+            <h2>Design System</h2>
+            <p class="description">Explore the component review dashboard.</p>
+          </div>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </div>
+      </a>
     </section>
   </main>
 </body>
+
 </html>
