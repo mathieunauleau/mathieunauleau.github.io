@@ -972,7 +972,7 @@
               to: 1,
               value:
                 "+31 6 16 70 52 80  |  Amsterdam, moving to Paris  |  math.nauleau@gmail.com  |  mathieunauleau.com (pwd: UXD4sign!)",
-              locked: true,
+              locked: false,
               notes: [],
             },
             {
@@ -980,7 +980,7 @@
               to: 3,
               value:
                 "+31 6 16 70 52 80  |  Amsterdam, mobilité Paris  |  math.nauleau@gmail.com  |  mathieunauleau.com (mdp : UXD4sign!)",
-              locked: true,
+              locked: false,
               notes: [],
             },
           ],
@@ -2274,8 +2274,8 @@
               const v = Object.prototype.hasOwnProperty.call(draft, key)
                 ? draft[key]
                 : orig.get(key);
-              const label = `${r.label}, ${cols[g.from].lang} ${cols[g.from].role}`;
-              return `<td class="editable" data-key="${esc(key)}"><textarea rows="1" maxlength="${maxLen(r)}" aria-label="${esc(label)}" placeholder="(empty)">${esc(v)}</textarea><button class="undo" type="button" aria-label="Restore the original text" title="Restore the original text">${ICON_UNDO}</button></td>`;
+              const label = `${r.label}, ${cols[g.from].lang}${span > 1 ? "" : " " + cols[g.from].role}`;
+              return `<td class="editable"${span > 1 ? ` colspan="${span}"` : ""} data-key="${esc(key)}"><textarea rows="1" maxlength="${maxLen(r)}" aria-label="${esc(label)}" placeholder="(empty)">${esc(v)}</textarea><button class="undo" type="button" aria-label="Restore the original text" title="Restore the original text">${ICON_UNDO}</button></td>`;
             })
             .join("");
           return `<tr${isSec ? ' class="sec"' : ""}><th scope="row">${esc(r.label)}</th>${tds}</tr>`;
