@@ -776,6 +776,8 @@
       });
       return copy;
     }
+    /* Contact cell = "location | website (note)". Phone and email live only in this browser (Settings): parts that look like either are dropped */
+    const contactParts = (s) => String(s || "").split("|").map((x) => x.trim()).filter((x) => x && !/@/.test(x) && !/^\+?[\d\s().-]{6,}$/.test(x));
     /* keep only edits that match an editable cell of this sheet; single-line text */
     function sanitizeEdits(raw, sheet) {
       const ok = new Set(),
@@ -793,6 +795,8 @@
               .replace(/\s*[\r\n]+\s*/g, " ")
               .trim()
               .slice(0, 600);
+          if (k.startsWith("Contact|") && out[k] !== undefined)
+            out[k] = contactParts(out[k]).join("  |  ");
         });
       sheet.rows.forEach((r) => {
         if (r.label === "Section title")
@@ -840,17 +844,12 @@
         }
         return out;
       };
-      const parts = (ci) =>
-        val(L["Contact"], ci)
-          .split("|")
-          .map((s) => s.trim());
-      const site = parts(0)[3] || "",
+      const parts = (ci) => contactParts(val(L["Contact"], ci));
+      const site = parts(0)[1] || "",
         sp = site.indexOf(" ");
       const data = {
         profile: {
           name: val(L["Name"], 0),
-          phone: parts(0)[0],
-          email: parts(0)[2],
           siteLabel: sp < 0 ? site : site.slice(0, sp),
           siteUrl: "https://" + (sp < 0 ? site : site.slice(0, sp)),
         },
@@ -864,11 +863,11 @@
       ["en", "fr"].forEach((lang) => {
         const pc = COLS[lang].product,
           cp = parts(pc),
-          site = cp[3] || "",
+          site = cp[1] || "",
           sp = site.indexOf(" ");
         const d = {
           head: {},
-          contactMeta: cp[1] || "",
+          contactMeta: cp[0] || "",
           siteNote: sp < 0 ? "" : site.slice(sp + 1),
           summary: {},
           meta: {},
@@ -971,7 +970,7 @@
               from: 0,
               to: 1,
               value:
-                "+31 6 16 70 52 80  |  Amsterdam, moving to Paris  |  math.nauleau@gmail.com  |  mathieunauleau.com (pwd: UXD4sign!)",
+                "Amsterdam, moving to Paris  |  mathieunauleau.com (pwd: UXD4sign!)",
               locked: false,
               notes: [],
             },
@@ -979,7 +978,7 @@
               from: 2,
               to: 3,
               value:
-                "+31 6 16 70 52 80  |  Amsterdam, mobilité Paris  |  math.nauleau@gmail.com  |  mathieunauleau.com (mdp : UXD4sign!)",
+                "Amsterdam, mobilité Paris  |  mathieunauleau.com (mdp : UXD4sign!)",
               locked: false,
               notes: [],
             },
