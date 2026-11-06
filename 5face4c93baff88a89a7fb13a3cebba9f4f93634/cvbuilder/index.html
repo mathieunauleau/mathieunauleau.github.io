@@ -721,6 +721,86 @@
       white-space: pre-wrap
     }
 
+    /* stacked rows sharing one outline (Soft skills) */
+    .editor .stack {
+      border: 1px solid #d3d6e2;
+      border-radius: 9px;
+      background: #fff;
+      overflow: hidden;
+      transition: border-color .12s
+    }
+
+    .editor .stack:hover {
+      border-color: #b9bccb
+    }
+
+    .editor .stack .fld {
+      position: relative
+    }
+
+    .editor .stack .fld+.fld {
+      border-top: 1px solid #d3d6e2
+    }
+
+    .editor .stack textarea.field {
+      border: 0;
+      border-radius: 0;
+      padding-right: 54px
+    }
+
+    .editor .stack textarea.field:focus {
+      box-shadow: inset 0 0 0 2px var(--slate)
+    }
+
+    .editor .stack .fld .link {
+      position: absolute;
+      top: 7px;
+      right: 10px;
+      font-size: 12px
+    }
+
+    /* bullets drawn over Bullets fields (presentation only; the text stays plain) */
+    .editor .bul-wrap {
+      position: relative
+    }
+
+    .editor textarea.bullets,
+    .editor .bul-mirror {
+      padding-left: 24px;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      word-break: normal
+    }
+
+    .editor .bul-mirror {
+      position: absolute;
+      inset: 0;
+      border: 1px solid transparent;
+      padding-top: 8px;
+      padding-right: 10px;
+      padding-bottom: 8px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: transparent;
+      pointer-events: none;
+      overflow: hidden
+    }
+
+    .editor .bul-mirror .ln {
+      position: relative
+    }
+
+    .editor .bul-mirror .ln::before {
+      content: "•";
+      position: absolute;
+      left: -13px;
+      color: var(--ui-muted)
+    }
+
+    .editor .bul-mirror .ln.blank::before {
+      content: none
+    }
+
     .fld-head label .hint {
       font-weight: 450;
       opacity: .8
@@ -753,8 +833,6 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 22px;
-      border-bottom: 1px solid #dcdfe7;
-      background: rgba(255, 255, 255, .7);
       backdrop-filter: blur(6px)
     }
 
@@ -1149,13 +1227,120 @@
       margin-top: 24px
     }
 
-    .dialog-actions .note {
+    .dialog-actions .btn {
+      min-width: 150px
+    }
+
+    .dialog-actions #startGo {
+      flex: 1
+    }
+
+    /* ───────────────────────── Figures dialog ───────────────────────── */
+    .check .msg .link {
+      margin-left: 6px;
+      font-size: 12px
+    }
+
+    .dialog.wide {
+      width: min(760px, 100%)
+    }
+
+    .fig-key {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      margin-top: 14px;
       font-size: 12px;
       color: var(--ui-muted)
     }
 
-    .dialog-actions .btn {
-      min-width: 150px
+    .fig-list {
+      list-style: none;
+      margin: 16px 0 0;
+      padding: 0;
+      display: grid;
+      gap: 12px
+    }
+
+    .fig-item {
+      border: 1px solid var(--ui-line);
+      border-radius: 12px;
+      padding: 12px 14px
+    }
+
+    .fig-item h3 {
+      font-size: 13px;
+      font-weight: 620;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .fig-item h3 .tags {
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--ui-muted)
+    }
+
+    .fig-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px
+    }
+
+    .fig-cols .group-label {
+      margin-bottom: 4px
+    }
+
+    .fig-text {
+      font-size: 12.5px;
+      line-height: 1.55;
+      white-space: pre-line;
+      overflow-wrap: anywhere
+    }
+
+    .fig-text.empty {
+      color: var(--ui-muted);
+      font-style: italic
+    }
+
+    .fig {
+      border-radius: 4px;
+      padding: 0 3px;
+      font-weight: 600;
+      background: var(--ui-soft)
+    }
+
+    .fig.new {
+      background: #fdebc8;
+      color: #5a3700;
+      box-shadow: inset 0 -2px 0 var(--warn)
+    }
+
+    .fig.other {
+      background: #e4ecfb;
+      color: #1d3f7a;
+      box-shadow: inset 0 -2px 0 #3b6fd1
+    }
+
+    .fig.gone {
+      background: #f3e3e6;
+      color: #7a1d2f;
+      text-decoration: line-through
+    }
+
+    .fig-empty {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--ui-muted)
+    }
+
+    @media (max-width:640px) {
+      .fig-cols {
+        grid-template-columns: 1fr
+      }
     }
 
     @media (max-width:900px) {
@@ -1364,8 +1549,25 @@
 
       <div class="dialog-actions">
         <button class="btn btn-secondary" id="startCancel" type="button" hidden>Cancel</button>
-        <span class="note" id="startNote">Choose both to continue.</span>
         <button class="btn btn-primary" id="startGo" type="button" disabled>Open builder</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="figures" role="dialog" aria-modal="true" aria-labelledby="figuresTitle" hidden>
+    <div class="dialog wide">
+      <h2 id="figuresTitle">Figures in your edits</h2>
+      <p class="lede">Each field you edited that contains a number, shown next to its default text. Check the
+        highlighted numbers against your LinkedIn and portfolio.</p>
+      <div class="fig-key" aria-hidden="true">
+        <span><span class="fig new">42</span> New: in no default text</span>
+        <span><span class="fig other">15</span> From another text, not this field's default</span>
+        <span><span class="fig gone">38</span> In the default, missing from your text</span>
+        <span><span class="fig">20</span> Unchanged</span>
+      </div>
+      <ul class="fig-list" id="figuresList"></ul>
+      <div class="dialog-actions">
+        <button class="btn btn-primary" id="figuresClose" type="button">Close</button>
       </div>
     </div>
   </div>
@@ -1439,7 +1641,7 @@
 
       /* CV content: the workbook's data (SHEET, embedded at build time) plus the texts saved from the CV Data page.
          Per language (en, fr) and role family (product, ds): summary, bullets per job, education, training, skills, soft skills. */
-      const SHEET = {"title":"CV texts","legend":"Grey = fixed (locked)   ·   White = editable   ·   Ctrl+S saves your edits as the new defaults","columns":[{"id":"en-product","lang":"English","role":"Product"},{"id":"en-ds","lang":"English","role":"Design System"},{"id":"fr-product","lang":"Français","role":"Product"},{"id":"fr-ds","lang":"Français","role":"Design System"}],"rows":[{"label":"Title","groups":[{"from":0,"to":0,"value":"Senior Product Designer","locked":true,"notes":[]},{"from":1,"to":1,"value":"Senior Design System Designer","locked":true,"notes":["Your attached CVs were titled 'Senior Product Designer'. The fixed Design System title comes from CV Builder."]},{"from":2,"to":2,"value":"Senior Product Designer","locked":true,"notes":[]},{"from":3,"to":3,"value":"Senior Design System Designer","locked":true,"notes":["Your attached CVs were titled 'Senior Product Designer'. The fixed Design System title comes from CV Builder."]}]},{"label":"Name","groups":[{"from":0,"to":3,"value":"Mathieu Nauleau","locked":true,"notes":[]}]},{"label":"Contact","groups":[{"from":0,"to":1,"value":"+31 6 16 70 52 80  |  Amsterdam, moving to Paris  |  math.nauleau@gmail.com  |  mathieunauleau.com (pwd: UXD4sign!)","locked":false,"notes":[]},{"from":2,"to":3,"value":"+31 6 16 70 52 80  |  Amsterdam, mobilité Paris  |  math.nauleau@gmail.com  |  mathieunauleau.com (mdp : UXD4sign!)","locked":false,"notes":[]}]},{"label":"Introduction","groups":[{"from":0,"to":0,"value":"10 years of product design experience on complex products (retail, energy, aerospace). Working closely with PMs and developers, I bridge domains and turn fuzzy topics into clear, consistent digital solutions across multiple brands and platforms. Design systems and AI are at the core of my practice.","locked":false,"notes":[]},{"from":1,"to":1,"value":"10 years of product design experience on complex products (retail, energy, aerospace). Working closely with PMs and developers, I bridge domains and turn fuzzy topics into clear, consistent digital solutions across multiple brands and platforms. Design systems and AI are at the core of my practice.","locked":false,"notes":["Your attached CV carries the same intro as the Product column. CV Builder's earlier Design System intro was:\n\n10 years of product design experience on complex products (retail, energy, aerospace), now leading a multi-brand, multi-platform design system. Working closely with designers, PMs and developers, I turn fuzzy topics into clear, consistent, reusable solutions. Design systems and AI are at the core of my practice."]},{"from":2,"to":2,"value":"10 ans d’expérience en product design sur des produits complexes (retail, énergie, aéronautique). En collaboration étroite avec PM et développeurs, je fais le lien entre les domaines et transforme les sujets flous en solutions digitales claires et cohérentes, sur plusieurs marques et plateformes. Design systems et IA sont au cœur de ma pratique.","locked":false,"notes":[]},{"from":3,"to":3,"value":"10 ans d’expérience en product design sur des produits complexes (retail, énergie, aéronautique). En collaboration étroite avec PM et développeurs, je fais le lien entre les domaines et transforme les sujets flous en solutions digitales claires et cohérentes, sur plusieurs marques et plateformes. Design systems et IA sont au cœur de ma pratique.","locked":false,"notes":["Your attached CV carries the same intro as the Product column. CV Builder's earlier Design System intro was:\n\n10 ans d’expérience en product design sur des produits complexes (retail, énergie, aéronautique), aujourd’hui à la tête d’un design system multimarque et multiplateforme. En collaboration étroite avec designers, PM et développeurs, je transforme les sujets flous en solutions claires, cohérentes et réutilisables. Design systems et IA sont au cœur de ma pratique."]}]},{"spacer":true},{"label":"Section title","groups":[{"from":0,"to":1,"value":"PROFESSIONAL EXPERIENCE","locked":true,"notes":[]},{"from":2,"to":3,"value":"EXPÉRIENCE PROFESSIONNELLE","locked":true,"notes":[]}]},{"label":"Job 1 · Title","groups":[{"from":0,"to":3,"value":"Senior Product Designer & Design System Lead","locked":true,"notes":[]}]},{"label":"Job 1 · Company | sector | dates","groups":[{"from":0,"to":1,"value":"Eneco, Netherlands | Energy | 01/2026–Present","locked":true,"notes":["The workbook says “2026–Now” / “2026–Aujourd’hui”. The builder uses “Present” / “Présent” (your earlier request; the standard wording for ATS)."]},{"from":2,"to":3,"value":"Eneco, Pays-Bas | Énergie | 01/2026–Présent","locked":true,"notes":["The workbook says “2026–Now” / “2026–Aujourd’hui”. The builder uses “Present” / “Présent” (your earlier request; the standard wording for ATS)."]}]},{"label":"Job 1 · Bullet 1","groups":[{"from":0,"to":0,"value":"Involved in a B2B product (ongoing): sales flow simplified from 6 to 3 steps, from design through user testing. Flow conversion +20%.","locked":false,"notes":["Check: conversion reads +20% here, but an earlier chat quoted 40% → 55% for this flow. The CV and LinkedIn must tell the same story."]},{"from":1,"to":1,"value":"Made the Spark DS usable by AI agents: a suite of Claude skills (tokens, documentation, Figma generation via MCP) and automated token consistency checks.","locked":false,"notes":[]},{"from":2,"to":2,"value":"Impliqué dans un produit B2B (en cours) : sales flow simplifié de 6 à 3 étapes, de la conception aux tests utilisateurs. Conversion du flow +20 %.","locked":false,"notes":["Check: conversion reads +20% here, but an earlier chat quoted 40% → 55% for this flow. The CV and LinkedIn must tell the same story."]},{"from":3,"to":3,"value":"Rendu Spark DS exploitable par des agents IA : suite de skills Claude (tokens, documentation, génération Figma via MCP) et contrôle automatisé de la cohérence des tokens.","locked":false,"notes":[]}]},{"label":"Job 1 · Bullet 2","groups":[{"from":0,"to":0,"value":"Made the Spark DS usable by AI agents: a suite of Claude skills (tokens, documentation, Figma generation via MCP) and automated token consistency checks.","locked":false,"notes":[]},{"from":1,"to":1,"value":"Supported a B2B product: sales flow simplified from 6 to 3 steps, from design through user testing. Flow conversion +20%.","locked":false,"notes":["Check: conversion reads +20% here, but an earlier chat quoted 40% → 55% for this flow. The CV and LinkedIn must tell the same story.\nWording differs from the Product columns ('Involved in … (ongoing)' there, 'Supported' here)."]},{"from":2,"to":2,"value":"Spark DS rendu exploitable par des agents IA : suite de skills Claude (tokens, documentation, génération Figma via MCP) et contrôle automatisé de la cohérence des tokens.","locked":false,"notes":[]},{"from":3,"to":3,"value":"Accompagné un produit B2B : sales flow simplifié de 6 à 3 étapes, de la conception aux tests utilisateurs. Conversion du flow +20 %.","locked":false,"notes":["Check: conversion reads +20% here, but an earlier chat quoted 40% → 55% for this flow. The CV and LinkedIn must tell the same story.\nWording differs from the Product columns ('Involved in … (ongoing)' there, 'Supported' here)."]}]},{"label":"Job 1 · Bullet 3","groups":[{"from":0,"to":0,"value":"Rolled out Spark across 7 product teams, 2 brands and 2 platforms (React, Kotlin). Component adoption went from 0.2% (Jan. 2026) to 38%. Estimated time savings of 15% per designer and developer (internal survey of 26 respondents).","locked":false,"notes":["Check: adoption is 38% here; earlier notes and the LinkedIn text said 42%. Confirm the current figure."]},{"from":1,"to":1,"value":"Rolled out Spark across 7 product teams, 2 brands (Eneco, Oxxio) and 2 platforms (React, Kotlin). Component adoption went from 0.2% (Jan. 2026) to 38%, measured via a weekly dashboard. Estimated time savings of 15% per designer and developer (internal survey of 26 respondents).","locked":false,"notes":["Check: adoption is 38% here; earlier notes and the LinkedIn text said 42%. Confirm the current figure."]},{"from":2,"to":2,"value":"Déployé Spark auprès de 7 équipes produit, 2 marques et 2 plateformes (React, Kotlin) : adoption des composants de 0,2 % (janv. 2026) à 38 %. Gain de temps estimé à 15 % par designer et développeur (enquête interne auprès de 26 répondants).","locked":false,"notes":["Check: adoption is 38% here; earlier notes and the LinkedIn text said 42%. Confirm the current figure."]},{"from":3,"to":3,"value":"Déployé Spark auprès de 7 équipes produit, 2 marques (Eneco, Oxxio) et 2 plateformes (React, Kotlin) : adoption des composants de 0,2 % (janv. 2026) à 38 %, mesurée via un dashboard hebdomadaire. Gain de temps estimé à 15 % par designer et développeur (enquête interne auprès de 26 répondants).","locked":false,"notes":["Check: adoption is 38% here; earlier notes and the LinkedIn text said 42%. Confirm the current figure."]}]},{"label":"Job 1 · Bullet 4","groups":[{"from":0,"to":0,"value":"Set up Figma governance and DesignOps processes to accelerate adoption across the organization.","locked":false,"notes":[]},{"from":1,"to":1,"value":"Set up Figma governance and DesignOps processes to accelerate adoption across the organization.","locked":false,"notes":[]},{"from":2,"to":2,"value":"Mise en place de la gouvernance Figma et des processus DesignOps pour accélérer l’adoption à l’échelle de l’organisation.","locked":false,"notes":[]},{"from":3,"to":3,"value":"Mise en place de la gouvernance Figma et des processus DesignOps pour accélérer l’adoption à l’échelle de l’organisation.","locked":false,"notes":[]}]},{"spacer":true},{"label":"Job 2 · Title","groups":[{"from":0,"to":3,"value":"Product Designer — B2C/B2B eCommerce & Design System","locked":true,"notes":["Your attached FR CV read 'Product designer, puis Design System Lead'. This fixed title is the one used in every version of CV Builder."]}]},{"label":"Job 2 · Company | sector | dates","groups":[{"from":0,"to":1,"value":"Ahold Delhaize, Netherlands | Retail eCommerce | 03/2021–12/2025","locked":true,"notes":[]},{"from":2,"to":3,"value":"Ahold Delhaize, Pays-Bas | Retail eCommerce | 03/2021–12/2025","locked":true,"notes":[]}]},{"label":"Job 2 · Bullet 1","groups":[{"from":0,"to":0,"value":"Lead designer of the multi-brand app: Gall&Gall +11,000 app customers and +€180K revenue in 3 months; Etos +54,000 customers and +€570K in 6 months.","locked":false,"notes":[]},{"from":1,"to":1,"value":"Lead designer of the multi-brand app: Gall&Gall +11,000 app customers and +€180K revenue in 3 months; Etos +54,000 customers and +€570K in 6 months.","locked":false,"notes":[]},{"from":2,"to":2,"value":"Designer principal de l’application multimarque : Gall&Gall +11 000 clients sur l’application et +180 K€ de chiffre d’affaires en 3 mois ; Etos +54 000 clients et +570 K€ en 6 mois.","locked":false,"notes":[]},{"from":3,"to":3,"value":"Designer principal de l’application multimarque : Gall&Gall +11 000 clients sur l’application et +160 K€ de chiffre d’affaires en 3 mois ; Etos +54 000 clients et +570 K€ en 6 mois.","locked":false,"notes":["Check: +160 K€ here (as in your attached FR CV), but +180 K€ in the other three columns. Confirm which is right."]}]},{"label":"Job 2 · Bullet 2","groups":[{"from":0,"to":0,"value":"Lead delivery App: conversion +15% and revenue +23% in one year.","locked":false,"notes":[]},{"from":1,"to":1,"value":"Lead delivery App: conversion +15% and revenue +23% in one year.","locked":false,"notes":[]},{"from":2,"to":2,"value":"Lead delivery App : conversion +15 % et chiffre d’affaires +23 % en un an.","locked":false,"notes":[]},{"from":3,"to":3,"value":"Lead delivery App : conversion +15 % et chiffre d’affaires +23 % en un an.","locked":false,"notes":[]}]},{"label":"Job 2 · Bullet 3","groups":[{"from":0,"to":0,"value":"Lead designer of an anti-food-waste app, later integrated into the main app, which helped save about 1,700 tonnes of unsold food.","locked":false,"notes":[]},{"from":1,"to":1,"value":"Lead designer of an anti-food-waste app, later integrated into the main app, which helped save about 1,700 tonnes of unsold food.","locked":false,"notes":[]},{"from":2,"to":2,"value":"Designer principal d’une app anti-gaspi, puis intégrée à l’app principale, ayant permis de sauver environ 1 700 tonnes d’aliments invendus.","locked":false,"notes":[]},{"from":3,"to":3,"value":"Designer principal d’une app anti-gaspi puis intégrée à l’app principale et ayant permis de sauver environ 1 700 tonnes d’aliments invendus.","locked":false,"notes":[]}]},{"label":"Job 2 · Bullet 4","groups":[{"from":0,"to":0,"value":"Shipped MVP of an internal pricing tool for the Merchandising unit: ran a 2-day discovery workshop with its users and used vibe-coding to guide development.","locked":false,"notes":[]},{"from":1,"to":1,"value":"Design system member serving 18 technical teams, then Design System Lead in the final year: expanded to 20+ products.","locked":false,"notes":[]},{"from":2,"to":2,"value":"Livré le MVP d’un outil interne de pricing pour l’unité Merchandising : atelier de discovery de 2 jours avec ses utilisateurs et vibe-coding pour guider le développement.","locked":false,"notes":[]},{"from":3,"to":3,"value":"Membre du design system au service de 18 équipes techniques, puis Design System Lead la dernière année : expansion à 20+ produits.","locked":false,"notes":[]}]},{"label":"Job 2 · Bullet 5","groups":[{"from":0,"to":0,"value":"Design system member serving 18 technical teams, then Design System Lead in the final year: expanded to 20+ products.","locked":false,"notes":[]},{"from":1,"to":1,"value":"","locked":false,"notes":[]},{"from":2,"to":2,"value":"Membre du design system au service de 18 équipes techniques, puis Design System Lead la dernière année : expansion à 20+ produits.","locked":false,"notes":[]},{"from":3,"to":3,"value":"","locked":false,"notes":[]}]},{"spacer":true},{"label":"Job 3 · Title","groups":[{"from":0,"to":3,"value":"Service Designer","locked":true,"notes":[]}]},{"label":"Job 3 · Company | sector | dates","groups":[{"from":0,"to":1,"value":"Safran Cabin, Netherlands | Aeronautics | 01/2020–12/2020","locked":true,"notes":[]},{"from":2,"to":3,"value":"Safran Cabin, Pays-Bas | Aéronautique | 01/2020–12/2020","locked":true,"notes":[]}]},{"label":"Job 3 · Bullet 1","groups":[{"from":0,"to":0,"value":"Complex in-flight services ecosystem under certification constraints: visualizations to align stakeholders, interface POC for the crew, user interviews for the prototype.","locked":false,"notes":[]},{"from":1,"to":1,"value":"Complex in-flight services ecosystem under certification constraints: visualizations to align stakeholders, interface POC for the crew, user interviews for the prototype.","locked":false,"notes":[]},{"from":2,"to":2,"value":"Écosystème complexe de services en vol, sous contraintes de certification : visualisations pour aligner les parties prenantes, POC d’interface pour l’équipage, interviews utilisateurs pour le prototype.","locked":false,"notes":[]},{"from":3,"to":3,"value":"Écosystème complexe de services en vol, sous contraintes de certification : visualisations pour aligner les parties prenantes, POC d’interface pour l’équipage, interviews utilisateurs pour le prototype.","locked":false,"notes":[]}]},{"spacer":true},{"label":"Job 4 · Title","groups":[{"from":0,"to":3,"value":"Industrial & UX Designer","locked":true,"notes":[]}]},{"label":"Job 4 · Company | sector | dates","groups":[{"from":0,"to":1,"value":"WeArePerspective, Amsterdam, Netherlands | 03/2015–12/2019","locked":true,"notes":[]},{"from":2,"to":3,"value":"WeArePerspective, Amsterdam, Pays-Bas | 03/2015–12/2019","locked":true,"notes":[]}]},{"label":"Job 4 · Bullet 1","groups":[{"from":0,"to":0,"value":"Interfaces, branding and packaging for start-ups and multinationals.","locked":false,"notes":[]},{"from":1,"to":1,"value":"Interfaces, branding and packaging for start-ups and multinationals.","locked":false,"notes":[]},{"from":2,"to":2,"value":"Interfaces, branding et packaging pour start-ups et multinationales.","locked":false,"notes":[]},{"from":3,"to":3,"value":"Interfaces, branding et packaging pour start-ups et multinationales.","locked":false,"notes":[]}]},{"spacer":true},{"label":"Section title","groups":[{"from":0,"to":1,"value":"Education","locked":true,"notes":[]},{"from":2,"to":3,"value":"Études","locked":true,"notes":[]}]},{"label":"Education 1","groups":[{"from":0,"to":0,"value":"Industrial design, École de design Nantes Atlantique (2010–2015)","locked":false,"notes":[]},{"from":1,"to":1,"value":"Industrial design, École de design Nantes Atlantique (2010–2015)","locked":false,"notes":[]},{"from":2,"to":2,"value":"Design industriel, École de design Nantes Atlantique (2010–2015)","locked":false,"notes":[]},{"from":3,"to":3,"value":"Design industriel, École de design Nantes Atlantique (2010–2015)","locked":false,"notes":[]}]},{"label":"Education 2","groups":[{"from":0,"to":0,"value":"Milwaukee Institute of Art & Design, USA (fall 2013)","locked":false,"notes":[]},{"from":1,"to":1,"value":"Milwaukee Institute of Art & Design, USA (fall 2013)","locked":false,"notes":[]},{"from":2,"to":2,"value":"Milwaukee Institute of Art & Design, USA (automne 2013)","locked":false,"notes":[]},{"from":3,"to":3,"value":"Milwaukee Institute of Art & Design, USA (automne 2013)","locked":false,"notes":[]}]},{"spacer":true},{"label":"Section title","groups":[{"from":0,"to":1,"value":"Training","locked":true,"notes":[]},{"from":2,"to":3,"value":"Formations","locked":true,"notes":[]}]},{"label":"Training 1","groups":[{"from":0,"to":0,"value":"Leadership (01/2026)","locked":false,"notes":[]},{"from":1,"to":1,"value":"Leadership (01/2026)","locked":false,"notes":[]},{"from":2,"to":2,"value":"Leadership (01/2026)","locked":false,"notes":[]},{"from":3,"to":3,"value":"Leadership (01/2026)","locked":false,"notes":[]}]},{"label":"Training 2","groups":[{"from":0,"to":0,"value":"AI & Agents (11/2025)","locked":false,"notes":[]},{"from":1,"to":1,"value":"AI & Agents (11/2025)","locked":false,"notes":[]},{"from":2,"to":2,"value":"AI & Agents (11/2025)","locked":false,"notes":[]},{"from":3,"to":3,"value":"AI & Agents (11/2025)","locked":false,"notes":[]}]},{"label":"Training 3","groups":[{"from":0,"to":0,"value":"Data-driven design (01/2025)","locked":false,"notes":[]},{"from":1,"to":1,"value":"Data-driven design (01/2025)","locked":false,"notes":[]},{"from":2,"to":2,"value":"Data-driven design (01/2025)","locked":false,"notes":[]},{"from":3,"to":3,"value":"Data-driven design (01/2025)","locked":false,"notes":[]}]},{"label":"Training 4","groups":[{"from":0,"to":0,"value":"Product Management & Strategy, 3 months (2023)","locked":false,"notes":[]},{"from":1,"to":1,"value":"Product Management & Strategy, 3 months (2023)","locked":false,"notes":[]},{"from":2,"to":2,"value":"Product Management & Strategy, 3 mois (2023)","locked":false,"notes":[]},{"from":3,"to":3,"value":"Product Management & Strategy, 3 mois (2023)","locked":false,"notes":[]}]},{"label":"Training 5","groups":[{"from":0,"to":0,"value":"Design for complexity, 3-day masterclass (2021)","locked":false,"notes":[]},{"from":1,"to":1,"value":"Design for complexity, 3-day masterclass (2021)","locked":false,"notes":[]},{"from":2,"to":2,"value":"Design for complexity, masterclass 3 jours (2021)","locked":false,"notes":[]},{"from":3,"to":3,"value":"Design for complexity, masterclass 3 jours (2021)","locked":false,"notes":[]}]},{"spacer":true},{"label":"Section title","groups":[{"from":0,"to":1,"value":"Skills","locked":true,"notes":[]},{"from":2,"to":3,"value":"Compétences","locked":true,"notes":[]}]},{"label":"Skill 1","groups":[{"from":0,"to":0,"value":"Discovery, user research and testing, data analysis and CRO","locked":false,"notes":[]},{"from":1,"to":1,"value":"Discovery, user research and testing, data analysis and CRO","locked":false,"notes":[]},{"from":2,"to":2,"value":"Discovery, user research et tests, analyse data et CRO","locked":false,"notes":[]},{"from":3,"to":3,"value":"Discovery, user research et tests, analyse data et CRO","locked":false,"notes":[]}]},{"label":"Skill 2","groups":[{"from":0,"to":0,"value":"AI agents, Claude skills, workflow integration","locked":false,"notes":[]},{"from":1,"to":1,"value":"WCAG 2.1 AA, multi-brand tokens, components, documentation, governance","locked":false,"notes":[]},{"from":2,"to":2,"value":"Agents IA, skills Claude, intégration workflows","locked":false,"notes":[]},{"from":3,"to":3,"value":"WCAG 2.1 AA, tokens multimarque, composants, documentation, gouvernance","locked":false,"notes":[]}]},{"label":"Skill 3","groups":[{"from":0,"to":0,"value":"Figma (MCP), VSCode, GitHub","locked":false,"notes":[]},{"from":1,"to":1,"value":"AI agents, Claude skills, workflow integration","locked":false,"notes":[]},{"from":2,"to":2,"value":"Figma (MCP), VSCode, GitHub","locked":false,"notes":[]},{"from":3,"to":3,"value":"Agents IA, skills Claude, intégration workflows","locked":false,"notes":[]}]},{"label":"Skill 4","groups":[{"from":0,"to":0,"value":"WCAG 2.1 AA, multi-brand tokens, components, documentation, governance","locked":false,"notes":[]},{"from":1,"to":1,"value":"Figma (MCP), VSCode, GitHub","locked":false,"notes":[]},{"from":2,"to":2,"value":"WCAG 2.1 AA, tokens multimarque, composants, documentation, gouvernance","locked":false,"notes":[]},{"from":3,"to":3,"value":"Figma (MCP), VSCode, GitHub","locked":false,"notes":[]}]},{"label":"Skill 5","groups":[{"from":0,"to":0,"value":"Project management, roadmap","locked":false,"notes":[]},{"from":1,"to":1,"value":"Project management, roadmap","locked":false,"notes":[]},{"from":2,"to":2,"value":"Gestion de projet, roadmap","locked":false,"notes":[]},{"from":3,"to":3,"value":"Gestion de projet, roadmap","locked":false,"notes":[]}]},{"spacer":true},{"label":"Section title","groups":[{"from":0,"to":3,"value":"Soft skills","locked":true,"notes":[]}]},{"label":"Soft skill 1","groups":[{"from":0,"to":0,"value":"Pragmatic, solution-oriented","locked":false,"notes":[]},{"from":1,"to":1,"value":"Pragmatic, solution-oriented","locked":false,"notes":[]},{"from":2,"to":2,"value":"Sens pragmatique orienté solution","locked":false,"notes":[]},{"from":3,"to":3,"value":"Sens pragmatique orienté solution","locked":false,"notes":[]}]},{"label":"Soft skill 2","groups":[{"from":0,"to":0,"value":"Prototyping to align teams","locked":false,"notes":[]},{"from":1,"to":1,"value":"Advocacy with stakeholders","locked":false,"notes":[]},{"from":2,"to":2,"value":"Prototypage pour aligner les équipes","locked":false,"notes":[]},{"from":3,"to":3,"value":"Influence auprès des parties prenantes","locked":false,"notes":[]}]},{"label":"Soft skill 3","groups":[{"from":0,"to":0,"value":"Facilitating a variety of workshops","locked":false,"notes":[]},{"from":1,"to":1,"value":"Facilitating a variety of workshops","locked":false,"notes":[]},{"from":2,"to":2,"value":"Animation de workshops variés","locked":false,"notes":[]},{"from":3,"to":3,"value":"Animation de workshops variés","locked":false,"notes":[]}]},{"label":"Soft skill 4","groups":[{"from":0,"to":0,"value":"Collaboration with PMs and Tech","locked":false,"notes":[]},{"from":1,"to":1,"value":"Collaboration with PMs and Tech","locked":false,"notes":[]},{"from":2,"to":2,"value":"Collaboration avec PM et Tech","locked":false,"notes":[]},{"from":3,"to":3,"value":"Collaboration avec PM et Tech","locked":false,"notes":[]}]},{"label":"Soft skill 5","groups":[{"from":0,"to":0,"value":"French, Professional English","locked":false,"notes":[]},{"from":1,"to":1,"value":"French, Professional English","locked":false,"notes":[]},{"from":2,"to":2,"value":"Français, anglais professionnel","locked":false,"notes":[]},{"from":3,"to":3,"value":"Français, anglais professionnel","locked":false,"notes":[]}]}]};
+      const SHEET = { "title": "CV texts", "legend": "Grey = fixed (locked)   ·   White = editable   ·   Ctrl+S saves your edits as the new defaults", "columns": [{ "id": "en-product", "lang": "English", "role": "Product" }, { "id": "en-ds", "lang": "English", "role": "Design System" }, { "id": "fr-product", "lang": "Français", "role": "Product" }, { "id": "fr-ds", "lang": "Français", "role": "Design System" }], "rows": [{ "label": "Title", "groups": [{ "from": 0, "to": 0, "value": "Senior Product Designer", "locked": true, "notes": [] }, { "from": 1, "to": 1, "value": "Senior Design System Designer", "locked": true, "notes": ["Your attached CVs were titled 'Senior Product Designer'. The fixed Design System title comes from CV Builder."] }, { "from": 2, "to": 2, "value": "Senior Product Designer", "locked": true, "notes": [] }, { "from": 3, "to": 3, "value": "Senior Design System Designer", "locked": true, "notes": ["Your attached CVs were titled 'Senior Product Designer'. The fixed Design System title comes from CV Builder."] }] }, { "label": "Name", "groups": [{ "from": 0, "to": 3, "value": "Mathieu Nauleau", "locked": true, "notes": [] }] }, { "label": "Contact", "groups": [{ "from": 0, "to": 1, "value": "+31 6 16 70 52 80  |  Amsterdam, moving to Paris  |  math.nauleau@gmail.com  |  mathieunauleau.com (pwd: UXD4sign!)", "locked": false, "notes": [] }, { "from": 2, "to": 3, "value": "+31 6 16 70 52 80  |  Amsterdam, mobilité Paris  |  math.nauleau@gmail.com  |  mathieunauleau.com (mdp : UXD4sign!)", "locked": false, "notes": [] }] }, { "label": "Introduction", "groups": [{ "from": 0, "to": 0, "value": "10 years of product design experience on complex products (retail, energy, aerospace). Working closely with PMs and developers, I bridge domains and turn fuzzy topics into clear, consistent digital solutions across multiple brands and platforms. Design systems and AI are at the core of my practice.", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "10 years of product design experience on complex products (retail, energy, aerospace). Working closely with PMs and developers, I bridge domains and turn fuzzy topics into clear, consistent digital solutions across multiple brands and platforms. Design systems and AI are at the core of my practice.", "locked": false, "notes": ["Your attached CV carries the same intro as the Product column. CV Builder's earlier Design System intro was:\n\n10 years of product design experience on complex products (retail, energy, aerospace), now leading a multi-brand, multi-platform design system. Working closely with designers, PMs and developers, I turn fuzzy topics into clear, consistent, reusable solutions. Design systems and AI are at the core of my practice."] }, { "from": 2, "to": 2, "value": "10 ans d’expérience en product design sur des produits complexes (retail, énergie, aéronautique). En collaboration étroite avec PM et développeurs, je fais le lien entre les domaines et transforme les sujets flous en solutions digitales claires et cohérentes, sur plusieurs marques et plateformes. Design systems et IA sont au cœur de ma pratique.", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "10 ans d’expérience en product design sur des produits complexes (retail, énergie, aéronautique). En collaboration étroite avec PM et développeurs, je fais le lien entre les domaines et transforme les sujets flous en solutions digitales claires et cohérentes, sur plusieurs marques et plateformes. Design systems et IA sont au cœur de ma pratique.", "locked": false, "notes": ["Your attached CV carries the same intro as the Product column. CV Builder's earlier Design System intro was:\n\n10 ans d’expérience en product design sur des produits complexes (retail, énergie, aéronautique), aujourd’hui à la tête d’un design system multimarque et multiplateforme. En collaboration étroite avec designers, PM et développeurs, je transforme les sujets flous en solutions claires, cohérentes et réutilisables. Design systems et IA sont au cœur de ma pratique."] }] }, { "spacer": true }, { "label": "Section title", "groups": [{ "from": 0, "to": 1, "value": "PROFESSIONAL EXPERIENCE", "locked": true, "notes": [] }, { "from": 2, "to": 3, "value": "EXPÉRIENCE PROFESSIONNELLE", "locked": true, "notes": [] }] }, { "label": "Job 1 · Title", "groups": [{ "from": 0, "to": 3, "value": "Senior Product Designer & Design System Lead", "locked": true, "notes": [] }] }, { "label": "Job 1 · Company | sector | dates", "groups": [{ "from": 0, "to": 1, "value": "Eneco, Netherlands | Energy | 01/2026–Present", "locked": true, "notes": ["The workbook says “2026–Now” / “2026–Aujourd’hui”. The builder uses “Present” / “Présent” (your earlier request; the standard wording for ATS)."] }, { "from": 2, "to": 3, "value": "Eneco, Pays-Bas | Énergie | 01/2026–Présent", "locked": true, "notes": ["The workbook says “2026–Now” / “2026–Aujourd’hui”. The builder uses “Present” / “Présent” (your earlier request; the standard wording for ATS)."] }] }, { "label": "Job 1 · Bullet 1", "groups": [{ "from": 0, "to": 0, "value": "Involved in a B2B product (ongoing): sales flow simplified from 6 to 3 steps, from design through user testing. Flow conversion +20%.", "locked": false, "notes": ["Check: conversion reads +20% here, but an earlier chat quoted 40% → 55% for this flow. The CV and LinkedIn must tell the same story."] }, { "from": 1, "to": 1, "value": "Made the Spark DS usable by AI agents: a suite of Claude skills (tokens, documentation, Figma generation via MCP) and automated token consistency checks.", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Impliqué dans un produit B2B (en cours) : sales flow simplifié de 6 à 3 étapes, de la conception aux tests utilisateurs. Conversion du flow +20 %.", "locked": false, "notes": ["Check: conversion reads +20% here, but an earlier chat quoted 40% → 55% for this flow. The CV and LinkedIn must tell the same story."] }, { "from": 3, "to": 3, "value": "Rendu Spark DS exploitable par des agents IA : suite de skills Claude (tokens, documentation, génération Figma via MCP) et contrôle automatisé de la cohérence des tokens.", "locked": false, "notes": [] }] }, { "label": "Job 1 · Bullet 2", "groups": [{ "from": 0, "to": 0, "value": "Made the Spark DS usable by AI agents: a suite of Claude skills (tokens, documentation, Figma generation via MCP) and automated token consistency checks.", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Supported a B2B product: sales flow simplified from 6 to 3 steps, from design through user testing. Flow conversion +20%.", "locked": false, "notes": ["Check: conversion reads +20% here, but an earlier chat quoted 40% → 55% for this flow. The CV and LinkedIn must tell the same story.\nWording differs from the Product columns ('Involved in … (ongoing)' there, 'Supported' here)."] }, { "from": 2, "to": 2, "value": "Spark DS rendu exploitable par des agents IA : suite de skills Claude (tokens, documentation, génération Figma via MCP) et contrôle automatisé de la cohérence des tokens.", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Accompagné un produit B2B : sales flow simplifié de 6 à 3 étapes, de la conception aux tests utilisateurs. Conversion du flow +20 %.", "locked": false, "notes": ["Check: conversion reads +20% here, but an earlier chat quoted 40% → 55% for this flow. The CV and LinkedIn must tell the same story.\nWording differs from the Product columns ('Involved in … (ongoing)' there, 'Supported' here)."] }] }, { "label": "Job 1 · Bullet 3", "groups": [{ "from": 0, "to": 0, "value": "Rolled out Spark across 7 product teams, 2 brands and 2 platforms (React, Kotlin). Component adoption went from 0.2% (Jan. 2026) to 38%. Estimated time savings of 15% per designer and developer (internal survey of 26 respondents).", "locked": false, "notes": ["Check: adoption is 38% here; earlier notes and the LinkedIn text said 42%. Confirm the current figure."] }, { "from": 1, "to": 1, "value": "Rolled out Spark across 7 product teams, 2 brands (Eneco, Oxxio) and 2 platforms (React, Kotlin). Component adoption went from 0.2% (Jan. 2026) to 38%, measured via a weekly dashboard. Estimated time savings of 15% per designer and developer (internal survey of 26 respondents).", "locked": false, "notes": ["Check: adoption is 38% here; earlier notes and the LinkedIn text said 42%. Confirm the current figure."] }, { "from": 2, "to": 2, "value": "Déployé Spark auprès de 7 équipes produit, 2 marques et 2 plateformes (React, Kotlin) : adoption des composants de 0,2 % (janv. 2026) à 38 %. Gain de temps estimé à 15 % par designer et développeur (enquête interne auprès de 26 répondants).", "locked": false, "notes": ["Check: adoption is 38% here; earlier notes and the LinkedIn text said 42%. Confirm the current figure."] }, { "from": 3, "to": 3, "value": "Déployé Spark auprès de 7 équipes produit, 2 marques (Eneco, Oxxio) et 2 plateformes (React, Kotlin) : adoption des composants de 0,2 % (janv. 2026) à 38 %, mesurée via un dashboard hebdomadaire. Gain de temps estimé à 15 % par designer et développeur (enquête interne auprès de 26 répondants).", "locked": false, "notes": ["Check: adoption is 38% here; earlier notes and the LinkedIn text said 42%. Confirm the current figure."] }] }, { "label": "Job 1 · Bullet 4", "groups": [{ "from": 0, "to": 0, "value": "Set up Figma governance and DesignOps processes to accelerate adoption across the organization.", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Set up Figma governance and DesignOps processes to accelerate adoption across the organization.", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Mise en place de la gouvernance Figma et des processus DesignOps pour accélérer l’adoption à l’échelle de l’organisation.", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Mise en place de la gouvernance Figma et des processus DesignOps pour accélérer l’adoption à l’échelle de l’organisation.", "locked": false, "notes": [] }] }, { "spacer": true }, { "label": "Job 2 · Title", "groups": [{ "from": 0, "to": 3, "value": "Product Designer — B2C/B2B eCommerce & Design System", "locked": true, "notes": ["Your attached FR CV read 'Product designer, puis Design System Lead'. This fixed title is the one used in every version of CV Builder."] }] }, { "label": "Job 2 · Company | sector | dates", "groups": [{ "from": 0, "to": 1, "value": "Ahold Delhaize, Netherlands | Retail eCommerce | 03/2021–12/2025", "locked": true, "notes": [] }, { "from": 2, "to": 3, "value": "Ahold Delhaize, Pays-Bas | Retail eCommerce | 03/2021–12/2025", "locked": true, "notes": [] }] }, { "label": "Job 2 · Bullet 1", "groups": [{ "from": 0, "to": 0, "value": "Lead designer of the multi-brand app: Gall&Gall +11,000 app customers and +€180K revenue in 3 months; Etos +54,000 customers and +€570K in 6 months.", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Lead designer of the multi-brand app: Gall&Gall +11,000 app customers and +€180K revenue in 3 months; Etos +54,000 customers and +€570K in 6 months.", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Designer principal de l’application multimarque : Gall&Gall +11 000 clients sur l’application et +180 K€ de chiffre d’affaires en 3 mois ; Etos +54 000 clients et +570 K€ en 6 mois.", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Designer principal de l’application multimarque : Gall&Gall +11 000 clients sur l’application et +160 K€ de chiffre d’affaires en 3 mois ; Etos +54 000 clients et +570 K€ en 6 mois.", "locked": false, "notes": ["Check: +160 K€ here (as in your attached FR CV), but +180 K€ in the other three columns. Confirm which is right."] }] }, { "label": "Job 2 · Bullet 2", "groups": [{ "from": 0, "to": 0, "value": "Lead delivery App: conversion +15% and revenue +23% in one year.", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Lead delivery App: conversion +15% and revenue +23% in one year.", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Lead delivery App : conversion +15 % et chiffre d’affaires +23 % en un an.", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Lead delivery App : conversion +15 % et chiffre d’affaires +23 % en un an.", "locked": false, "notes": [] }] }, { "label": "Job 2 · Bullet 3", "groups": [{ "from": 0, "to": 0, "value": "Lead designer of an anti-food-waste app, later integrated into the main app, which helped save about 1,700 tonnes of unsold food.", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Lead designer of an anti-food-waste app, later integrated into the main app, which helped save about 1,700 tonnes of unsold food.", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Designer principal d’une app anti-gaspi, puis intégrée à l’app principale, ayant permis de sauver environ 1 700 tonnes d’aliments invendus.", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Designer principal d’une app anti-gaspi puis intégrée à l’app principale et ayant permis de sauver environ 1 700 tonnes d’aliments invendus.", "locked": false, "notes": [] }] }, { "label": "Job 2 · Bullet 4", "groups": [{ "from": 0, "to": 0, "value": "Shipped MVP of an internal pricing tool for the Merchandising unit: ran a 2-day discovery workshop with its users and used vibe-coding to guide development.", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Design system member serving 18 technical teams, then Design System Lead in the final year: expanded to 20+ products.", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Livré le MVP d’un outil interne de pricing pour l’unité Merchandising : atelier de discovery de 2 jours avec ses utilisateurs et vibe-coding pour guider le développement.", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Membre du design system au service de 18 équipes techniques, puis Design System Lead la dernière année : expansion à 20+ produits.", "locked": false, "notes": [] }] }, { "label": "Job 2 · Bullet 5", "groups": [{ "from": 0, "to": 0, "value": "Design system member serving 18 technical teams, then Design System Lead in the final year: expanded to 20+ products.", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Membre du design system au service de 18 équipes techniques, puis Design System Lead la dernière année : expansion à 20+ produits.", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "", "locked": false, "notes": [] }] }, { "spacer": true }, { "label": "Job 3 · Title", "groups": [{ "from": 0, "to": 3, "value": "Service Designer", "locked": true, "notes": [] }] }, { "label": "Job 3 · Company | sector | dates", "groups": [{ "from": 0, "to": 1, "value": "Safran Cabin, Netherlands | Aeronautics | 01/2020–12/2020", "locked": true, "notes": [] }, { "from": 2, "to": 3, "value": "Safran Cabin, Pays-Bas | Aéronautique | 01/2020–12/2020", "locked": true, "notes": [] }] }, { "label": "Job 3 · Bullet 1", "groups": [{ "from": 0, "to": 0, "value": "Complex in-flight services ecosystem under certification constraints: visualizations to align stakeholders, interface POC for the crew, user interviews for the prototype.", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Complex in-flight services ecosystem under certification constraints: visualizations to align stakeholders, interface POC for the crew, user interviews for the prototype.", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Écosystème complexe de services en vol, sous contraintes de certification : visualisations pour aligner les parties prenantes, POC d’interface pour l’équipage, interviews utilisateurs pour le prototype.", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Écosystème complexe de services en vol, sous contraintes de certification : visualisations pour aligner les parties prenantes, POC d’interface pour l’équipage, interviews utilisateurs pour le prototype.", "locked": false, "notes": [] }] }, { "spacer": true }, { "label": "Job 4 · Title", "groups": [{ "from": 0, "to": 3, "value": "Industrial & UX Designer", "locked": true, "notes": [] }] }, { "label": "Job 4 · Company | sector | dates", "groups": [{ "from": 0, "to": 1, "value": "WeArePerspective, Amsterdam, Netherlands | 03/2015–12/2019", "locked": true, "notes": [] }, { "from": 2, "to": 3, "value": "WeArePerspective, Amsterdam, Pays-Bas | 03/2015–12/2019", "locked": true, "notes": [] }] }, { "label": "Job 4 · Bullet 1", "groups": [{ "from": 0, "to": 0, "value": "Interfaces, branding and packaging for start-ups and multinationals.", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Interfaces, branding and packaging for start-ups and multinationals.", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Interfaces, branding et packaging pour start-ups et multinationales.", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Interfaces, branding et packaging pour start-ups et multinationales.", "locked": false, "notes": [] }] }, { "spacer": true }, { "label": "Section title", "groups": [{ "from": 0, "to": 1, "value": "Education", "locked": true, "notes": [] }, { "from": 2, "to": 3, "value": "Études", "locked": true, "notes": [] }] }, { "label": "Education 1", "groups": [{ "from": 0, "to": 0, "value": "Industrial design, École de design Nantes Atlantique (2010–2015)", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Industrial design, École de design Nantes Atlantique (2010–2015)", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Design industriel, École de design Nantes Atlantique (2010–2015)", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Design industriel, École de design Nantes Atlantique (2010–2015)", "locked": false, "notes": [] }] }, { "label": "Education 2", "groups": [{ "from": 0, "to": 0, "value": "Milwaukee Institute of Art & Design, USA (fall 2013)", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Milwaukee Institute of Art & Design, USA (fall 2013)", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Milwaukee Institute of Art & Design, USA (automne 2013)", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Milwaukee Institute of Art & Design, USA (automne 2013)", "locked": false, "notes": [] }] }, { "spacer": true }, { "label": "Section title", "groups": [{ "from": 0, "to": 1, "value": "Training", "locked": true, "notes": [] }, { "from": 2, "to": 3, "value": "Formations", "locked": true, "notes": [] }] }, { "label": "Training 1", "groups": [{ "from": 0, "to": 0, "value": "Leadership (01/2026)", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Leadership (01/2026)", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Leadership (01/2026)", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Leadership (01/2026)", "locked": false, "notes": [] }] }, { "label": "Training 2", "groups": [{ "from": 0, "to": 0, "value": "AI & Agents (11/2025)", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "AI & Agents (11/2025)", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "AI & Agents (11/2025)", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "AI & Agents (11/2025)", "locked": false, "notes": [] }] }, { "label": "Training 3", "groups": [{ "from": 0, "to": 0, "value": "Data-driven design (01/2025)", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Data-driven design (01/2025)", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Data-driven design (01/2025)", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Data-driven design (01/2025)", "locked": false, "notes": [] }] }, { "label": "Training 4", "groups": [{ "from": 0, "to": 0, "value": "Product Management & Strategy, 3 months (2023)", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Product Management & Strategy, 3 months (2023)", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Product Management & Strategy, 3 mois (2023)", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Product Management & Strategy, 3 mois (2023)", "locked": false, "notes": [] }] }, { "label": "Training 5", "groups": [{ "from": 0, "to": 0, "value": "Design for complexity, 3-day masterclass (2021)", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Design for complexity, 3-day masterclass (2021)", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Design for complexity, masterclass 3 jours (2021)", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Design for complexity, masterclass 3 jours (2021)", "locked": false, "notes": [] }] }, { "spacer": true }, { "label": "Section title", "groups": [{ "from": 0, "to": 1, "value": "Skills", "locked": true, "notes": [] }, { "from": 2, "to": 3, "value": "Compétences", "locked": true, "notes": [] }] }, { "label": "Skill 1", "groups": [{ "from": 0, "to": 0, "value": "Discovery, user research and testing, data analysis and CRO", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Discovery, user research and testing, data analysis and CRO", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Discovery, user research et tests, analyse data et CRO", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Discovery, user research et tests, analyse data et CRO", "locked": false, "notes": [] }] }, { "label": "Skill 2", "groups": [{ "from": 0, "to": 0, "value": "AI agents, Claude skills, workflow integration", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "WCAG 2.1 AA, multi-brand tokens, components, documentation, governance", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Agents IA, skills Claude, intégration workflows", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "WCAG 2.1 AA, tokens multimarque, composants, documentation, gouvernance", "locked": false, "notes": [] }] }, { "label": "Skill 3", "groups": [{ "from": 0, "to": 0, "value": "Figma (MCP), VSCode, GitHub", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "AI agents, Claude skills, workflow integration", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Figma (MCP), VSCode, GitHub", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Agents IA, skills Claude, intégration workflows", "locked": false, "notes": [] }] }, { "label": "Skill 4", "groups": [{ "from": 0, "to": 0, "value": "WCAG 2.1 AA, multi-brand tokens, components, documentation, governance", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Figma (MCP), VSCode, GitHub", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "WCAG 2.1 AA, tokens multimarque, composants, documentation, gouvernance", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Figma (MCP), VSCode, GitHub", "locked": false, "notes": [] }] }, { "label": "Skill 5", "groups": [{ "from": 0, "to": 0, "value": "Project management, roadmap", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Project management, roadmap", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Gestion de projet, roadmap", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Gestion de projet, roadmap", "locked": false, "notes": [] }] }, { "spacer": true }, { "label": "Section title", "groups": [{ "from": 0, "to": 3, "value": "Soft skills", "locked": true, "notes": [] }] }, { "label": "Soft skill 1", "groups": [{ "from": 0, "to": 0, "value": "Pragmatic, solution-oriented", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Pragmatic, solution-oriented", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Sens pragmatique orienté solution", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Sens pragmatique orienté solution", "locked": false, "notes": [] }] }, { "label": "Soft skill 2", "groups": [{ "from": 0, "to": 0, "value": "Prototyping to align teams", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Advocacy with stakeholders", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Prototypage pour aligner les équipes", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Influence auprès des parties prenantes", "locked": false, "notes": [] }] }, { "label": "Soft skill 3", "groups": [{ "from": 0, "to": 0, "value": "Facilitating a variety of workshops", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Facilitating a variety of workshops", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Animation de workshops variés", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Animation de workshops variés", "locked": false, "notes": [] }] }, { "label": "Soft skill 4", "groups": [{ "from": 0, "to": 0, "value": "Collaboration with PMs and Tech", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "Collaboration with PMs and Tech", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Collaboration avec PM et Tech", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Collaboration avec PM et Tech", "locked": false, "notes": [] }] }, { "label": "Soft skill 5", "groups": [{ "from": 0, "to": 0, "value": "French, Professional English", "locked": false, "notes": [] }, { "from": 1, "to": 1, "value": "French, Professional English", "locked": false, "notes": [] }, { "from": 2, "to": 2, "value": "Français, anglais professionnel", "locked": false, "notes": [] }, { "from": 3, "to": 3, "value": "Français, anglais professionnel", "locked": false, "notes": [] }] }] };
       let TEXTS = readSaved(SHEET);                       // { edits, savedAt } or null = original workbook texts
       let CV_DATA = toCvData(applyEdits(SHEET, TEXTS ? TEXTS.edits : {}));
       let PROFILE = CV_DATA.profile;
@@ -1472,7 +1674,7 @@
         editor: $('#editor'), resetAll: $('#resetAll'),
         checks: $('#checks'), fileName: $('#fileName'),
         zoomPct: $('#zoomPct'),
-        start: $('#start'), startGo: $('#startGo'), startCancel: $('#startCancel'), startNote: $('#startNote'), startTitle: $('#startTitle'), startLede: $('#startLede'),
+        start: $('#start'), startGo: $('#startGo'), startCancel: $('#startCancel'), startTitle: $('#startTitle'), startLede: $('#startLede'),
       };
 
       const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -1493,7 +1695,7 @@
       const SECTION_LABEL = { edu: 'Education', training: 'Training', skills: 'Skills', soft: 'Soft skills' };
       function schemaFor(role, lang) {
         const c = CV[lang];
-        const items = (id, label, arr) => ({ id, label: SECTION_LABEL[id], groups: [{ fields: arr.map((t, i) => ({ id: `${id}.${i}`, label: `${label} ${i + 1}`, def: t, max: 200 })) }] });
+        const items = (id, label, arr) => ({ id, label: SECTION_LABEL[id], groups: [{ stack: true, fields: arr.map((t, i) => ({ id: `${id}.${i}`, label: `${label} ${i + 1}`, def: t, max: 200 })) }] });
         /* Education, Training and Skills: one Bullets field each (one bullet per line); Soft skills keeps one field per line */
         const block = (id, arr) => ({ id, label: SECTION_LABEL[id], groups: [{ fields: [{ id: `${id}.bullets`, label: 'Bullets', def: arr.join('\n'), max: 1200, bullets: true }] }] });
         return [
@@ -1620,12 +1822,13 @@
       /* ════════════════════════════════════════════════════════════════════
          Checks: one page, summary length, new figures
          ════════════════════════════════════════════════════════════════════ */
-      const normNumbers = s => String(s).split(/\r?\n/).flatMap(normLine);
-      const normLine = s => (String(s)
-        .replace(/(\d)[\s  ](\d{3})(?!\d)/g, '$1$2')
-        .replace(/(\d),(\d{3})(?!\d)/g, '$1$2')
-        .replace(/(\d),(\d)/g, '$1.$2')
-        .match(/\d+(?:\.\d+)?/g) || []).map(n => String(parseFloat(n)));
+      /* numbers as written ("11,000", "11 000", "0,2") with their position; n is the normalised value ("11000", "0.2") */
+      const NUM_RE = /\d{1,3}(?:[ \u00a0\u202f,]\d{3})+(?!\d)|\d+(?:[.,]\d+)?/g;
+      const numTokens = s => [...String(s).matchAll(NUM_RE)].map(m => ({
+        i: m.index, raw: m[0],
+        n: String(parseFloat(m[0].replace(/(\d)[ \u00a0\u202f,](?=\d{3}(?!\d))/g, '$1').replace(',', '.'))),
+      }));
+      const normNumbers = s => numTokens(s).map(t => t.n);
       /* every number that appears in any default text (both languages, both role families) is "known" */
       const figuresOf = () => new Set(['product', 'ds'].flatMap(r => ['en', 'fr'].flatMap(l => Object.values(defaultsFor(r, l)))).flatMap(normNumbers));
       let ALLOWED_FIGURES = figuresOf();
@@ -1654,11 +1857,66 @@
           ? row(true, 'Fits on one A4 page')
           : row(false, 'Too long for one page', `About ${status.overflowLines} line${status.overflowLines > 1 ? 's' : ''} too many for the page margins. Shorten a field.`));
         if (status.summaryLines > 3) rows.push(row(false, `Summary is ${status.summaryLines} lines`, 'It should stay within 3 lines, or it touches the rule below.'));
+        const details = figureFields().length ? ' <button class="link" id="figuresBtn" type="button">Details</button>' : '';
         rows.push(status.newFigures.length === 0
-          ? row(true, 'No new figures')
-          : row(false, `New figure: ${status.newFigures.map(esc).join(', ')}`, 'Check it against your LinkedIn and portfolio before sending.'));
+          ? row(true, 'No new figures' + details)
+          : row(false, `New figure: ${status.newFigures.map(esc).join(', ')}${details}`, 'Check it against your LinkedIn and portfolio before sending.'));
         el.checks.innerHTML = rows.join('');
       }
+
+      /* ── Figures dialog: every edited field with a number in it, default text next to the edited text ── */
+      function figureFields() {
+        const out = [];
+        schemaFor(state.role, state.lang).forEach(sec => sec.groups.forEach(g => g.fields.forEach(f => {
+          const e = state.edits[ek(f.id)];
+          if (e === undefined || e === f.def) return;
+          const mine = numTokens(e), def = numTokens(f.def);
+          if (!mine.length && !def.length) return;
+          const defSet = new Set(def.map(t => t.n)), mineSet = new Set(mine.map(t => t.n));
+          const kind = t => !ALLOWED_FIGURES.has(t.n) ? 'new' : defSet.has(t.n) ? '' : 'other';
+          out.push({
+            where: [sec.label, g.title, f.label].filter(Boolean).join(' · '),
+            text: e, def: f.def, mine, defTokens: def,
+            kind, gone: t => !mineSet.has(t.n),
+          });
+        })));
+        return out;
+      }
+      /* the text with its numbers wrapped in highlight spans */
+      const markNumbers = (text, tokens, cls) => {
+        let html = '', at = 0;
+        tokens.forEach(t => {
+          const c = cls(t);
+          html += esc(text.slice(at, t.i)) + `<span class="fig${c ? ' ' + c : ''}">${esc(t.raw)}</span>`;
+          at = t.i + t.raw.length;
+        });
+        return html + esc(text.slice(at));
+      };
+      const textBlock = (label, text, tokens, cls) => `<div><div class="group-label">${label}</div>${String(text).trim()
+        ? `<div class="fig-text">${markNumbers(text, tokens, cls)}</div>`
+        : '<div class="fig-text empty">(empty)</div>'}</div>`;
+      const figuresDlg = $('#figures');
+      function openFigures() {
+        const items = figureFields();
+        $('#figuresList').innerHTML = items.length ? items.map(it => {
+          const nNew = it.mine.filter(t => it.kind(t) === 'new').length,
+            nOther = it.mine.filter(t => it.kind(t) === 'other').length,
+            nGone = it.defTokens.filter(it.gone).length;
+          const tags = [nNew && `${nNew} new`, nOther && `${nOther} from another text`, nGone && `${nGone} missing`].filter(Boolean);
+          return `<li class="fig-item"><h3>${esc(it.where)}<span class="tags">${tags.length ? tags.join(' · ') : 'Same figures as the default'}</span></h3>
+            <div class="fig-cols">${textBlock('Default', it.def, it.defTokens, t => it.gone(t) ? 'gone' : '')}${textBlock('Your text', it.text, it.mine, it.kind)}</div></li>`;
+        }).join('') : '<li class="fig-empty">None of your edits contain a number.</li>';
+        figuresDlg.hidden = false;
+        setTimeout(() => $('#figuresClose').focus(), 30);
+      }
+      function closeFigures() {
+        figuresDlg.hidden = true;
+        const b = $('#figuresBtn'); if (b) b.focus();
+      }
+      el.checks.addEventListener('click', e => { if (e.target.closest('#figuresBtn')) openFigures(); });
+      $('#figuresClose').addEventListener('click', closeFigures);
+      figuresDlg.addEventListener('click', e => { if (e.target === figuresDlg) closeFigures(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape' && !figuresDlg.hidden) closeFigures(); });
 
       const autosize = ta => { ta.style.height = 'auto'; ta.style.height = (ta.scrollHeight + 2) + 'px'; };
 
@@ -1670,13 +1928,21 @@
       function setFileName() { el.fileName.innerHTML = esc(fileBase() + '.pdf').replace(/-/g, '-<wbr>'); }
 
       const CHEV = '<svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-      function fieldEl(f) {
+      function fieldEl(f, stacked) {
         const wrap = document.createElement('div'); wrap.className = 'fld'; wrap.dataset.id = f.id;
         const domId = 'f-' + f.id.replace(/[^a-z0-9]+/gi, '-');
         const label = f.bullets ? `${esc(f.label)} <span class="hint">· one per line</span>` : esc(f.label);
-        wrap.innerHTML = `<div class="fld-head"><label for="${domId}">${label}</label><span class="fld-r">${f.bullets ? '<span class="count"></span>' : ''}<button class="link" type="button" hidden>Reset</button></span></div><textarea class="field${f.bullets ? ' bullets' : ''}" id="${domId}" maxlength="${f.max || 300}" rows="${f.bullets ? 4 : 1}"${f.bullets ? ' placeholder="One bullet per line. Press Enter for a new bullet."' : ''}></textarea>`;
-        const ta = $('textarea', wrap), rb = $('button', wrap), count = $('.count', wrap);
-        const updateCount = () => { if (count) { const n = bulletLines(ta.value).length; count.textContent = `${n} bullet${n === 1 ? '' : 's'}`; } };
+        /* stacked rows (Soft skills): no visible label, the reset sits inside the row */
+        wrap.innerHTML = stacked
+          ? `<textarea class="field" id="${domId}" maxlength="${f.max || 300}" rows="1" aria-label="${esc(f.label)}"></textarea><button class="link" type="button" hidden aria-label="Reset ${esc(f.label)}">Reset</button>`
+          : `<div class="fld-head"><label for="${domId}">${label}</label><span class="fld-r">${f.bullets ? '<span class="count"></span>' : ''}<button class="link" type="button" hidden>Reset</button></span></div>${f.bullets ? '<div class="bul-wrap">' : ''}<textarea class="field${f.bullets ? ' bullets' : ''}" id="${domId}" maxlength="${f.max || 300}" rows="${f.bullets ? 4 : 1}"${f.bullets ? ' placeholder="One bullet per line. Press Enter for a new bullet."' : ''}></textarea>${f.bullets ? '<div class="bul-mirror" aria-hidden="true"></div></div>' : ''}`;
+        const ta = $('textarea', wrap), rb = $('button', wrap), count = $('.count', wrap), mirror = $('.bul-mirror', wrap);
+        /* presentation only: a transparent copy of the text over the field draws a bullet at the start of each non-empty line */
+        const updateMirror = () => {
+          if (!mirror) return;
+          mirror.innerHTML = ta.value.split('\n').map(l => `<div class="${l.trim() ? 'ln' : 'ln blank'}">${esc(l) || ' '}</div>`).join('');
+        };
+        const updateCount = () => { updateMirror(); if (count) { const n = bulletLines(ta.value).length; count.textContent = `${n} bullet${n === 1 ? '' : 's'}`; } };
         ta.value = isEdited(f.id) ? state.edits[ek(f.id)] : f.def; ta.lang = state.lang; rb.hidden = !isEdited(f.id); updateCount();
         ta.addEventListener('input', () => {
           autosize(ta); updateCount();
@@ -1694,7 +1960,11 @@
           const body = $('.body', det);
           sec.groups.forEach(g => {
             if (g.title) { const gt = document.createElement('div'); gt.className = 'grp-title'; gt.textContent = g.title; body.appendChild(gt); }
-            g.fields.forEach(f => body.appendChild(fieldEl(f)));
+            if (g.stack) {
+              const st = document.createElement('div'); st.className = 'stack';
+              g.fields.forEach(f => st.appendChild(fieldEl(f, true)));
+              body.appendChild(st);
+            } else g.fields.forEach(f => body.appendChild(fieldEl(f)));
           });
           det.addEventListener('toggle', () => { det.open ? state.open.add(sec.id) : state.open.delete(sec.id); if (det.open) $$('textarea', det).forEach(autosize); });
           el.editor.appendChild(det);
@@ -1816,7 +2086,6 @@
       function updateStartButton() {
         const ok = picked('role') && picked('lang');
         el.startGo.disabled = !ok;
-        el.startNote.textContent = ok ? '' : 'Choose both to continue.';
       }
       function openStart() {
         radios('role').forEach(r => { r.checked = r.value === state.role; });
