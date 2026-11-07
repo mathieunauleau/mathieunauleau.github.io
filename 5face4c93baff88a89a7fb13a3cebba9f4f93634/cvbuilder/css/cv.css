@@ -1,0 +1,221 @@
+/* CV Builder: the CV page itself (the A4 sheet, mirrors the Figma frame) and how it prints. */
+
+/* ───────────────────────── The CV page ─────────────────────────
+   Mirrors the Figma frame (Container 0:16): auto-layout columns/rows, with the Figma variables for every
+   colour, text style and spacing value (--color-*, --text-*, --spacing-*). Nothing is positioned by hand. */
+.page {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--page-width);
+  height: var(--page-height);
+  transform: scale(var(--scale));
+  transform-origin: 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  color: var(--color-primary);
+  overflow: hidden;
+  font-kerning: normal;
+  font-synthesis: none;
+  text-rendering: geometricPrecision
+}
+
+.page * {
+  box-sizing: border-box
+}
+
+.page h1,
+.page h2,
+.page h3,
+.page p,
+.page ul {
+  margin: 0;
+  padding: 0
+}
+
+.page a {
+  color: inherit;
+  text-decoration: none
+}
+
+.page[lang="fr"] .bl li {
+  text-wrap: pretty
+}
+
+/* avoids one-word last lines in French; English wraps stay identical to the design */
+.cv-header {
+  flex: none;
+  width: 100%;
+  height: var(--header-height);
+  padding: var(--spacing-xlarge) var(--spacing-xlarge) var(--spacing-medium);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--header-gap)
+}
+
+.cv-titles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-small)
+}
+
+/* Figma sets every line of text 1px lower inside its line box than Chrome does (measured on Figma's own render, the name excepted) */
+.cv-title,
+.cv-contact,
+.cv-summary,
+.h,
+.role-title,
+.role-meta,
+.bl li,
+.soft>div {
+  position: relative;
+  top: var(--text-baseline-shift)
+}
+
+.cv-title {
+  white-space: nowrap;
+  text-align: center
+}
+
+/* Figma leaves the letter-spacing after the last character out of a text box's width, Chrome includes it: compensate so centring and space-between match */
+.cv-name {
+  text-align: center;
+  padding-left: var(--text-heading-1-letter-spacing)
+}
+
+.cv-contact {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  white-space: nowrap
+}
+
+.cv-contact .phone {
+  letter-spacing: var(--phone-letter-spacing);
+  padding-right: calc(-1 * var(--phone-letter-spacing))
+}
+
+.cv-summary {
+  width: 100%
+}
+
+.slot {
+  flex: none;
+  width: 100%;
+  height: 0
+}
+
+/* where Figma has a 0-height line layer; the stroke is drawn in the .rules SVG */
+.panels {
+  flex: none;
+  width: 100%;
+  height: calc(var(--page-height) - var(--panels-top));
+  margin-top: calc(var(--panels-top) - var(--header-height));
+  display: flex;
+  justify-content: space-between
+}
+
+.panel-main,
+.panel-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--panel-gap);
+  overflow: hidden
+}
+
+.panel-main {
+  width: var(--main-panel-width);
+  padding: var(--spacing-large) var(--spacing-large) var(--spacing-large) var(--spacing-xlarge)
+}
+
+.panel-side {
+  width: var(--panel-side-width);
+  padding: var(--spacing-large) var(--spacing-xlarge) var(--spacing-large) var(--spacing-large)
+}
+
+.rules {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none
+}
+
+.rules g {
+  fill: none;
+  stroke: var(--color-secondary);
+  stroke-width: 1;
+  stroke-linecap: round
+}
+
+.role {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-base)
+}
+
+.role-meta {
+  color: var(--color-secondary)
+}
+
+.bl {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--list-item-gap)
+}
+
+.bl li {
+  --pl: var(--list-indent);
+  --dl: 4.687px;
+  position: relative;
+  padding-left: var(--pl)
+}
+
+.bl li::before {
+  content: "•";
+  display: inline-block;
+  box-sizing: border-box;
+  width: var(--pl);
+  margin-left: calc(-1 * var(--pl));
+  padding-left: var(--dl);
+  line-height: 0;
+  color: var(--color-primary)
+}
+
+/* in-flow, so the bullet precedes its text in the PDF text stream */
+.side-sec {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium)
+}
+
+.soft>div {
+  white-space: nowrap
+}
+
+
+/* ───────────────────────── Print: A4, one page, no UI ───────────────────────── */
+@page {
+  size: A4;
+  margin: 0
+}
+
+@media print {
+
+  /* zoom instead of transform: a transform makes the browser wrap the text in a PDF "form object",
+ which some ATS parsers (pdfminer-based) cannot read line by line */
+  .page {
+    transform: none !important;
+    zoom: 1.333
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact
+  }
+}
