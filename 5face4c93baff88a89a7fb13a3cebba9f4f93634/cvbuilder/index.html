@@ -114,7 +114,7 @@
   </div>
 
   <div class="modal" id="start" role="dialog" aria-modal="true" aria-labelledby="startTitle">
-    <div class="dialog">
+    <div class="dialog" tabindex="-1">
       <h2 id="startTitle">Start a new CV</h2>
       <p class="lede" id="startLede">Pick one role family and one language. Nothing is stored between sessions.</p>
 
@@ -560,10 +560,17 @@
       const textBlock = (label, text, tokens, cls) => `<div><div class="group-label">${label}</div>${String(text).trim()
         ? `<div class="fig-text">${markNumbers(text, tokens, cls)}</div>`
         : '<div class="fig-text empty">(empty)</div>'}</div>`;
+      /* ── Dialogs: while one is open, everything else on the page is inert, so Tab stays inside the dialog ── */
+      function showModal(dlg, open) {
+        dlg.hidden = !open;
+        const top = $$('.modal').filter(m => !m.hidden).pop();
+        [...document.body.children].forEach(n => { if (n.tagName !== 'SCRIPT') n.inert = !!top && n !== top; });
+      }
+
       /* ── Settings dialog ── */
       const settingsDlg = $('#settings');
-      function closeSettings() { settingsDlg.hidden = true; $('#settingsBtn').focus(); }
-      $('#settingsBtn').addEventListener('click', () => { settingsDlg.hidden = false; setTimeout(() => $('#setPhone').focus(), 30); });
+      function closeSettings() { showModal(settingsDlg, false); $('#settingsBtn').focus(); }
+      $('#settingsBtn').addEventListener('click', () => { showModal(settingsDlg, true); setTimeout(() => $('#setPhone').focus(), 30); });
       [['phone', '#setPhone'], ['email', '#setEmail']].forEach(([k, sel]) => {
         const input = $(sel);
         input.value = PERSONAL[k];
@@ -596,8 +603,8 @@
         btn._t = setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('done'); }, 1800);
       }));
       $$('input', linksDlg).forEach(i => i.addEventListener('focus', () => i.select()));
-      function closeLinks() { linksDlg.hidden = true; $('#linksBtn').focus(); }
-      $('#linksBtn').addEventListener('click', () => { linksDlg.hidden = false; setTimeout(() => $('[data-copy]', linksDlg).focus(), 30); });
+      function closeLinks() { showModal(linksDlg, false); $('#linksBtn').focus(); }
+      $('#linksBtn').addEventListener('click', () => { showModal(linksDlg, true); setTimeout(() => $('[data-copy]', linksDlg).focus(), 30); });
       $('#linksClose').addEventListener('click', closeLinks);
       linksDlg.addEventListener('click', e => { if (e.target === linksDlg) closeLinks(); });
       document.addEventListener('keydown', e => { if (e.key === 'Escape' && !linksDlg.hidden) closeLinks(); });
@@ -613,11 +620,11 @@
           return `<li class="fig-item"><h3>${esc(it.where)}<span class="tags">${tags.length ? tags.join(' · ') : 'Same figures as the default'}</span></h3>
             <div class="fig-cols">${textBlock('Default', it.def, it.defTokens, t => it.gone(t) ? 'gone' : '')}${textBlock('Your text', it.text, it.mine, it.kind)}</div></li>`;
         }).join('') : '<li class="fig-empty">None of your edits contain a number.</li>';
-        figuresDlg.hidden = false;
+        showModal(figuresDlg, true);
         setTimeout(() => $('#figuresClose').focus(), 30);
       }
       function closeFigures() {
-        figuresDlg.hidden = true;
+        showModal(figuresDlg, false);
         const b = $('#figuresBtn'); if (b) b.focus();
       }
       el.checks.addEventListener('click', e => { if (e.target.closest('#figuresBtn')) openFigures(); });
@@ -795,6 +802,7 @@
         const ok = picked('role') && picked('lang');
         el.startGo.disabled = !ok;
       }
+      let reopened = false;   // opened from "Change": focus goes back to that button on close
       function openStart() {
         radios('role').forEach(r => { r.checked = r.value === state.role; });
         radios('lang').forEach(r => { r.checked = r.value === state.lang; });
@@ -803,12 +811,24 @@
           ? 'Edits you made to each version are kept until you close this tab.'
           : 'Pick one role family and one language. Nothing is stored between sessions.';
         el.startCancel.hidden = !state.started;
-        el.start.hidden = false;
+        showModal(el.start, true);
+        reopened = state.started;
         updateStartButton();
-        const first = $('input:checked', el.start) || $('input', el.start);
-        setTimeout(() => first && first.focus(), 30);
+        /* first visit: focus the dialog itself, so no tile shows a focus ring before the user does anything;
+           "Change version": focus the current choice */
+        const target = state.started ? $('input:checked', el.start) : $('.dialog', el.start);
+        setTimeout(() => target && target.focus(), 30);
       }
-      function closeStart() { el.start.hidden = true; }
+      /* Enter on a tile selects it (as Space does) and moves on: to the other group if it has no choice yet, else to "Open builder" */
+      el.start.addEventListener('keydown', e => {
+        if (e.key !== 'Enter' || e.target.type !== 'radio') return;
+        e.preventDefault();
+        e.target.checked = true;
+        updateStartButton();
+        const missing = ['role', 'lang'].find(n => !picked(n));
+        (missing ? radios(missing)[0] : el.startGo).focus();
+      });
+      function closeStart() { showModal(el.start, false); if (reopened) $('#changeBtn').focus(); }
       el.start.addEventListener('change', updateStartButton);
       el.startGo.addEventListener('click', () => {
         state.role = picked('role'); state.lang = picked('lang'); state.started = true;

@@ -856,6 +856,11 @@ summary:focus-visible {
   padding: 26px 26px 22px
 }
 
+/* the dialog box takes focus when the page opens (no visible ring: nothing to act on yet) */
+.dialog:focus {
+  outline: none
+}
+
 .dialog h2 {
   font-size: 20px;
   font-weight: 650;
