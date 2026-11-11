@@ -225,9 +225,37 @@ body.resizing .stage {
   gap: 8px
 }
 
-.copy-row .field {
+/* the input sits in a wrapper that also holds the site's icon */
+.copy-field {
+  position: relative;
   flex: 1;
-  min-width: 0;
+  min-width: 0
+}
+
+.copy-icon {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-50%);
+  pointer-events: none
+}
+
+.icon-linkedin {
+  color: #0a66c2
+}
+
+.icon-github {
+  color: var(--ink)
+}
+
+.icon-site {
+  color: var(--slate)
+}
+
+.copy-row .field {
+  padding-left: 38px;
   height: 42px;
   font-size: 13.5px;
   color: var(--ink)
