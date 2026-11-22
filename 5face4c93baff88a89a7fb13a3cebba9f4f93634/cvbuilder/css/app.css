@@ -1242,3 +1242,362 @@ summary:focus-visible {
     transition: none
   }
 }
+
+/* ───────────────────────── Tailor to a job (Claude) ───────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap
+}
+
+.tl-form,
+.tl-review,
+.tl-run {
+  display: grid;
+  gap: 12px
+}
+
+.tl-form .help,
+.tl-review .help,
+.tl-motiv .help {
+  margin-top: 0
+}
+
+.tl-review .help {
+  margin-top: 6px
+}
+
+textarea.field.tl-job {
+  min-height: 92px;
+  max-height: 320px;
+  resize: vertical;
+  overflow: auto
+}
+
+.btn.tl-go {
+  width: 100%
+}
+
+.tl-run {
+  justify-items: start
+}
+
+.tl-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  width: 100%
+}
+
+.tl-step {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 9px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ui-muted)
+}
+
+.tl-step small {
+  display: block;
+  font-size: 12px;
+  color: var(--ui-muted)
+}
+
+.tl-step.now,
+.tl-step.done {
+  color: var(--ink)
+}
+
+.tl-step.now {
+  font-weight: 600
+}
+
+.tl-step.now small {
+  font-weight: 400
+}
+
+.tl-step.fix {
+  color: #5a3700
+}
+
+.tl-dot {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  border-radius: 50%;
+  border: 1.6px solid #d3d6e2
+}
+
+.tl-step.now .tl-dot {
+  border-color: var(--slate);
+  border-top-color: transparent;
+  animation: tl-spin .8s linear infinite
+}
+
+.tl-step.done .tl-dot {
+  border: 0;
+  background: rgba(27, 127, 85, .14)
+}
+
+.tl-step.done .tl-dot::after {
+  content: "";
+  position: absolute;
+  left: 6.5px;
+  top: 3.5px;
+  width: 4px;
+  height: 8px;
+  border: solid var(--ok);
+  border-width: 0 1.8px 1.8px 0;
+  transform: rotate(45deg)
+}
+
+.tl-step.fix .tl-dot {
+  border: 0;
+  background: rgba(168, 93, 0, .16)
+}
+
+@keyframes tl-spin {
+  to {
+    transform: rotate(360deg)
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tl-step.now .tl-dot {
+    animation: none
+  }
+}
+
+.tl-title {
+  font-size: 14px;
+  font-weight: 620;
+  line-height: 1.35
+}
+
+.tl-title:focus {
+  outline: none
+}
+
+.tl-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap
+}
+
+.tl-row .group-label {
+  margin-bottom: 0
+}
+
+.tl-review>div>.tl-row {
+  margin-bottom: 9px
+}
+
+.tl-bulk {
+  display: flex;
+  gap: 12px
+}
+
+.tl-bulk[hidden] {
+  display: none
+}
+
+.tl-kw {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px
+}
+
+.tl-chip {
+  font-size: 12px;
+  line-height: 1.4;
+  border-radius: 999px;
+  padding: 3px 9px;
+  border: 1px dashed #c3c6d4;
+  color: var(--ui-muted);
+  background: #fff
+}
+
+.tl-chip.hit {
+  border: 1px solid #bfe3d0;
+  background: #e6f4ed;
+  color: #12643f
+}
+
+.tl-changes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px
+}
+
+.tl-change {
+  border: 1px solid var(--ui-line);
+  border-radius: 12px;
+  padding: 11px 12px;
+  display: grid;
+  gap: 8px;
+  background: #fff;
+  transition: border-color .12s, background .12s
+}
+
+.tl-change:hover {
+  border-color: #c9ccd8
+}
+
+.tl-change.off {
+  background: var(--ui-soft)
+}
+
+.tl-change.off .tl-diff {
+  opacity: .6
+}
+
+.tl-change.flash {
+  animation: tl-flash 1.2s ease-out
+}
+
+@keyframes tl-flash {
+  from {
+    box-shadow: var(--ring)
+  }
+
+  to {
+    box-shadow: none
+  }
+}
+
+.tl-ch-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px
+}
+
+.tl-where {
+  font-size: 12.5px;
+  font-weight: 600
+}
+
+.tl-state {
+  flex: none;
+  font-size: 11.5px;
+  color: var(--ui-muted)
+}
+
+.tl-diff {
+  font-size: 12.5px;
+  line-height: 1.55;
+  white-space: pre-line;
+  overflow-wrap: anywhere
+}
+
+.tl-diff del {
+  color: #8f1d17;
+  background: #fbe4e2;
+  text-decoration: line-through;
+  text-decoration-color: rgba(143, 29, 23, .5);
+  border-radius: 3px
+}
+
+.tl-diff ins {
+  color: #12643f;
+  background: #dcf1e5;
+  text-decoration: none;
+  border-radius: 3px
+}
+
+.tl-why {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ui-muted)
+}
+
+.tl-none {
+  font-size: 13px;
+  color: var(--ui-muted)
+}
+
+.tl-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px
+}
+
+.tl-btn {
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid #d3d6e2;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .12s
+}
+
+.tl-btn:hover {
+  background: var(--ui-soft)
+}
+
+.tl-btn:focus-visible {
+  outline: 0;
+  box-shadow: var(--ring)
+}
+
+.tl-btn[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff
+}
+
+.tl-btn[disabled] {
+  opacity: .45;
+  cursor: not-allowed
+}
+
+.tl-motiv {
+  display: grid;
+  gap: 8px;
+  padding-top: 4px
+}
+
+.tl-count {
+  font-size: 12px;
+  color: var(--ui-muted);
+  font-variant-numeric: tabular-nums
+}
+
+/* changed text on the CV page: screen only */
+.page .tl-hl {
+  background: rgba(27, 127, 85, .13);
+  box-shadow: inset 0 -1.5px 0 rgba(27, 127, 85, .55);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background .2s
+}
+
+.page .tl-hl.on,
+.page .tl-hl.flash {
+  background: rgba(27, 127, 85, .30)
+}
+
+@media print {
+
+  .page .tl-hl,
+  .page .tl-hl.on,
+  .page .tl-hl.flash {
+    background: none !important;
+    box-shadow: none !important;
+    transition: none !important
+  }
+}
