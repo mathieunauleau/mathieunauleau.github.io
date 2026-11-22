@@ -160,6 +160,14 @@
           browser you use.</p>
       </div>
       <div class="set-group">
+        <div class="group-label">Start</div>
+        <label class="set-toggle" for="setStartDialog">
+          <span class="set-toggle-text"><b>Show dialog at start</b><span>When off, the builder opens on English ·
+              Senior Product Designer.</span></span>
+          <input class="switch" id="setStartDialog" type="checkbox" role="switch">
+        </label>
+      </div>
+      <div class="set-group">
         <div class="group-label">Editing</div>
         <p class="set-text">Everything below is editable and starts from the default text for this language and
           position. Fixed: main title, section titles and personal information. Clear a field to remove it from the
@@ -589,6 +597,15 @@
           if (state.started) renderPage();
         });
       });
+      /* Start dialog on page load: on by default; when off, open straight on English · Senior Product Designer */
+      const START_KEY = 'cvb.startDialog.v1';
+      let showStartDialog = true;
+      try { showStartDialog = localStorage.getItem(START_KEY) !== 'off'; } catch (e) { /* storage blocked */ }
+      $('#setStartDialog').checked = showStartDialog;
+      $('#setStartDialog').addEventListener('change', e => {
+        showStartDialog = e.target.checked;
+        try { showStartDialog ? localStorage.removeItem(START_KEY) : localStorage.setItem(START_KEY, 'off'); } catch (err) { /* storage blocked: kept for this session */ }
+      });
       $('#settingsClose').addEventListener('click', closeSettings);
       settingsDlg.addEventListener('click', e => { if (e.target === settingsDlg) closeSettings(); });
       document.addEventListener('keydown', e => { if (e.key === 'Escape' && !settingsDlg.hidden) closeSettings(); });
@@ -895,7 +912,8 @@
       /* Test hook (harmless in normal use) */
       window.CVB = { get CV() { return CV; }, state, setTexts, toCvData, SHEET, refresh, renderPage, normNumbers, fileBase, status, schemaFor, defaultsFor };
 
-      openStart();
+      if (showStartDialog) openStart();
+      else { state.role = 'product'; state.lang = 'en'; state.started = true; showModal(el.start, false); refresh(); }
     })();
   </script>
 </body>
