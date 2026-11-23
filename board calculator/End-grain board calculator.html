@@ -61,6 +61,29 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid 
 .steps strong{color:var(--ink)}
 .msg{background:var(--field);border:1px dashed var(--edge);border-radius:5px;padding:18px;margin:0}
 .note{font-size:13px;color:var(--muted);margin:12px 0 0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overflow-x:hidden}
+.stat b{overflow-wrap:anywhere}
+@media(max-width:600px){
+  .wrap{padding:20px max(16px,env(safe-area-inset-left)) 32px max(16px,env(safe-area-inset-right))}
+  .sub{margin-bottom:16px;font-size:15px}
+  main{gap:14px}
+  .panel{padding:22px 16px 18px}
+  h2{font-size:18px}
+  .in input,select{font-size:16px;min-height:44px}
+  .btns button{min-height:44px}
+  .f:has(#p){grid-column:1/-1}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:14px}
+  .stat{padding:8px 10px}
+  .stat b{font-size:21px}
+  .stat span{font-size:12px}
+  .frame{padding:8px}
+  .ruler{height:22px;font-size:11px}
+  .ruler.v{width:22px;padding-left:3px}
+  .frame>.ruler:first-child{margin-left:22px!important}
+  .steps{font-size:13px;padding-left:18px}
+}
+@media(max-width:360px){.grid2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
